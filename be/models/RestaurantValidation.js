@@ -4,7 +4,8 @@ const validation = joi.object({
     title : joi.string().required(),
     location: joi.string().required(),
     description: joi.string().required(),
-    // reviews: joi.array()
+    rating:joi.number(),
+    reviews: joi.array(),
 })
 
 

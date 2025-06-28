@@ -1,7 +1,7 @@
 import { Link } from "react-router"
 import ButtonStyles from "../utils/ButtonStyles"
 
-const cardStyles = "bg-zinc-700 min-h-[200px] flex flex-col items-center gap-2 p-5 my-3 border-2 border-solid rounded-xl border-black"
+const cardStyles = "bg-zinc-700 max-w-[1280px] w-5/6 min-h-[200px] flex flex-col items-center gap-2 p-5 m-3 border-2 border-solid rounded-xl border-black"
 
 //Use to show the index page
 

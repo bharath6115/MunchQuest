@@ -2,7 +2,7 @@ import { NavLink } from "react-router"
 
 export default function Navbar() {
 
-    const navStyle = "bg-zinc-900 text-white border-b border-zinc-800 px-7 py-1 flex items-center justify-between shadow-sm";
+    const navStyle = "bg-zinc-900 text-white border-b border-zinc-800 px-7 py-1 flex items-center justify-between shadow-md";
     const linkStyles = ({ isActive }) => {
         return [
             isActive ? "text-bold" : "",

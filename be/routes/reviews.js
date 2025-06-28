@@ -2,7 +2,7 @@ import express from "express"
 import mongoose from "mongoose"
 import Review from "../models/Review.js"
 import Restaurant from "../models/Restaurant.js"
-import ReviewValidation from "../models/RestaurantValidation.js"
+import ReviewValidation from "../models/ReviewValidation.js"
 
 const router = express.Router({ mergeParams: true });
 
@@ -42,7 +42,7 @@ router.post("/", async (req, res) => {
     if (!data) return res.status(404).send("Invalid Restaurant ID") //actually not needed cuz of middlewear but let it be
 
     const { value, error } = ReviewValidation.validate(req.body);
-    if (error) return res.status(404).send("Review Validation error.");
+    if (error) return res.status(404).send(error.details);
 
     const newReview = new Review(value);
     await newReview.save();
@@ -76,7 +76,7 @@ router.patch("/:id", async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).send("Not a valid review ID");
 
     const { error, value } = ReviewValidation.validate(req.body);
-    if (error) return res.status(404).send("Review Validation error.");
+    if (error) return res.status(404).send(error.details);
 
     const data = await Review.findByIdAndUpdate(req.params.id, value, { new: true,});
     if (!data) return res.status(404).send("Invalid Review ID")
