@@ -11,11 +11,6 @@ const reviewSchema = new mongoose.Schema({
         type: String,
         required:true,
     },
-    // restaurant :{
-    //     type: mongoose.Types.ObjectId,
-    //     ref: 'Restaurant',
-    //     required: true,
-    // },
     // user :{
     //     type: String,   //firebase ID
     //     required: true,

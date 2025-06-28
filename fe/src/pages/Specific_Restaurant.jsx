@@ -7,26 +7,39 @@ import ButtonStyles from "../utils/ButtonStyles";
 const Specific_Restaurant = () => {
 
     const {id} = useParams();
-    const [data,setData] = useState({});
+    const [restaurantData,setrestaurantData] = useState({});
+    const [reviewsData,setReviewsData] = useState([]);
     const nav = useNavigate();
 
     useEffect(()=>{
-        const fetchData = async ()=>{
-            await axios.get(`/restaurants/${id}`)
+        const fetchReviews = async ()=>{
+            axios.get(`/restaurants/${id}/reviews`)
             .then((res)=>{
-                setData(res.data);
+                setReviewsData(res.data);
             })
             .catch(err=>{
-                console.log(err)
+                console.log("Error fetching reviews",err)
                 if(err.status===404){
                     nav("/error");
                 }
             })
         }
-        fetchData();
+        const fetchRestaurant = async ()=>{
+            axios.get(`/restaurants/${id}`)
+            .then((res)=>{
+                setrestaurantData(res.data);
+            })
+            .catch(err=>{
+                console.log("Error fetching restaurant",err)
+                if(err.status===404){
+                    nav("/error");
+                }
+            })
+        }
+        fetchRestaurant();
+        fetchReviews();
     },[])
-    // console.log(data);
-
+    
     const Upd = ()=>{
         nav(`/Restaurants/${id}/edit`);
     }
@@ -43,9 +56,9 @@ const Specific_Restaurant = () => {
     const DangerButton = ButtonStyles.replace("bg-sky-300","bg-red-400").replace("hover:bg-sky-500","hover:bg-red-500")
     return (
         <div className={styles}>
-            <h1>{data.title}</h1>
-            <h2>{data.location}</h2>
-            <h3>{data.description}</h3>
+            <h1>{restaurantData.title}</h1>
+            <h2>{restaurantData.location}</h2>
+            <h3>{restaurantData.description}</h3>
             <button className={ButtonStyles} onClick={Upd}>Update</button>
             <button className={DangerButton} onClick={Del}>Delete</button>
         </div>
