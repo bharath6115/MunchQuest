@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router"
 import Input from "./Input"
 import ButtonStyles from "../utils/ButtonStyles"
 import formStyles from "../utils/FormStyles"
 import axios from "axios"
-import { useNavigate, useParams } from "react-router"
 import { motion } from "framer-motion";
 
-export default function CreateReview({ updateReviews, reset }) {
-    const { id } = useParams();
+export default function CreateReview({ rating, message, target, updateReviews, title = "" }) {
     const nav = useNavigate();
 
     const [data, setData] = useState({
-        rating: "",
-        message: "",
+        rating: rating,
+        message: message,
     })
+
+    useEffect(() => {
+        setData({ rating, message });
+    }, [rating, message])
 
     const updData = (evt) => {
         const tgt = evt.target.name;
@@ -22,13 +25,13 @@ export default function CreateReview({ updateReviews, reset }) {
             return { ...old, [tgt]: val }
         })
     }
+
     const HandleSubmit = async (e) => {
         e.preventDefault();
         data.rating = parseInt(data.rating);
-        axios.post(`/restaurants/${id}/reviews`, data)
+        axios.post(target, data)
             .then(() => {
                 setData({ rating: "", message: "", })
-                reset(old => !old)    //close the new review once submitted
                 updateReviews();    //refetch the reviews
             }).catch((err) => {
                 console.log(err);
@@ -44,7 +47,7 @@ export default function CreateReview({ updateReviews, reset }) {
         >
 
             <form onSubmit={HandleSubmit} className={formStyles}>
-                <h1 className="text-3xl">Add a review</h1>
+                {title && <h1 className="text-3xl">{title}</h1>}
                 <Input fn={updData} name="rating" value={data.rating} />
                 <Input fn={updData} name="message" value={data.message} />
                 <button className={ButtonStyles} >Submit</button>
