@@ -7,8 +7,8 @@ import Create_Restaurant from './pages/Create_Restaurant.jsx'
 import ErrorPage from "./pages/ErrorPage.jsx"
 import Layout from './components/Layout.jsx'
 import Edit_Restaurant from "./pages/Edit_Restaurant.jsx"
-import Login from './pages/Login.jsx'
-import SignUp from './pages/SignUp.jsx'
+import { Login_Signup } from './pages/Login_Signup.jsx'
+import { AuthProvider } from './services/firebaseMethods.jsx'
 
 const router = createBrowserRouter([
 
@@ -23,12 +23,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/login",
-        element: <Login />,
-        errorElement: <ErrorPage />
-      },
-      {
-        path: "/signup",
-        element: <SignUp />,
+        element: <Login_Signup />,
         errorElement: <ErrorPage />
       },
       {
@@ -67,9 +62,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
+    <AuthProvider >
       <RouterProvider router={router} />
-    </>
+    </AuthProvider>
   )
 }
 

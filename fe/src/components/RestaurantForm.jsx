@@ -4,8 +4,13 @@ import Input from "./Input"
 import axios from "axios"
 import ButtonStyles from "../utils/ButtonStyles"
 import formStyles from "../utils/FormStyles"
+import { useAuth } from "../services/firebaseMethods"
 
 const RestaurantForm = ({ title = "", location = "", description = "", target, Heading }) => {
+    const { isLoggedIn } = useAuth();
+
+    if(!isLoggedIn) return <h1>Must be logged in!</h1>
+
     const [data, setData] = useState({
         title: title,
         location: location,

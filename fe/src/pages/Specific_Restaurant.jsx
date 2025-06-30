@@ -5,10 +5,12 @@ import { useParams } from "react-router";
 import ButtonStyles from "../utils/ButtonStyles";
 import ReviewForm from "../components/ReviewForm";
 import ShowReview from "../components/ShowReview";
+import { useAuth } from '../services/firebaseMethods';
 
 const Specific_Restaurant = () => {
 
     const { id } = useParams();
+    const { isLoggedIn } = useAuth();
     const [restaurantData, setrestaurantData] = useState(null);
     const [reviewsData, setReviewsData] = useState([]);
     const [editReview, setEditReview] = useState({});
@@ -88,15 +90,26 @@ const Specific_Restaurant = () => {
                     <h1>{restaurantData.title}</h1>
                     <h2>{restaurantData.location}</h2>
                     <h3>{restaurantData.description}</h3>
-                    <button className={ButtonStyles} onClick={UpdRestaurant}>Update</button>
-                    <button className={DangerButton} onClick={DelRestaurant}>Delete</button>
+                    {
+                        isLoggedIn
+                        &&
+                        <button className={ButtonStyles} onClick={UpdRestaurant}>Update</button>
+                    }
+                    {
+                        isLoggedIn
+                        &&
+                        <button className={DangerButton} onClick={DelRestaurant}>Delete</button>
+                    }
                 </div>
 
                 {/* Reviews Section */}
                 <div className="border-t-1 border-zinc-600 space-y-4 pt-4">
                     <div className="flex items-center justify-between pt-4 pb-2">
-                        <h2 className="text-4xl font-semibold text-yellow-300">Reviews</h2>
-                        <p className="text-sky-300 hover:text-yellow-300 font-thin text-md" onClick={() => { setNewReview(old => !old) }}>{(newReview ? "X Cancel" : "+ Add Review")}</p>
+                        <h2 className="text-4xl font-semibold text-yellow-300">✨Reviews</h2>
+                        {
+                            isLoggedIn &&
+                            <button className="btn text-sky-300 hover:text-yellow-300 font-thin text-md" onClick={() => { setNewReview(old => !old) }}>{(newReview ? "X Cancel" : "+ Add Review")}</button>
+                        }
                     </div>
 
                     {newReview && <ReviewForm title="Add a review" rating="" message="" target={`/restaurants/${id}/reviews/`} updateReviews={fetchReviews} />}
@@ -109,7 +122,7 @@ const Specific_Restaurant = () => {
                                 !editReview[review._id] ? //currently not in EDIT state? then render the review else render the edit
                                     <ShowReview UpdReview={UpdReview} DelReview={DelReview} rating={review.rating} message={review.message} id={review._id} />
                                     :
-                                    <ReviewForm rating={review.rating} message={review.message} target={`/restaurants/${id}/reviews/${review._id}/?_method=PATCH`} updateReviews={fetchReviews}/>
+                                    <ReviewForm rating={review.rating} message={review.message} target={`/restaurants/${id}/reviews/${review._id}/?_method=PATCH`} updateReviews={fetchReviews} />
                             }</div>
                         )
                     })}

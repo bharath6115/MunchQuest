@@ -1,6 +1,8 @@
 import { Link } from "react-router"
+import { useAuth } from "../services/firebaseMethods.jsx";
 
-export default function ShowReview({UpdReview,DelReview,rating,message,id}) {
+export default function ShowReview({ UpdReview, DelReview, rating, message, id }) {
+    const { isLoggedIn } = useAuth();
     return (
         <>
             <div className="flex justify-between items-center mb-2">
@@ -11,8 +13,14 @@ export default function ShowReview({UpdReview,DelReview,rating,message,id}) {
                 <p className="flex-grow text-zinc-200">"{message}"</p>
 
                 <div className="space-x-2 flex flex-row items-end">
-                    <Link onClick={() => { UpdReview(id) }} className="text-sky-300 hover:text-sky-500 font-thin font-thin">Update</Link>
-                    <Link onClick={() => { DelReview(id) }} className="text-red-400 hover:text-red-600 font-thin font-thin">Delete</Link>
+                    {isLoggedIn &&
+                        <Link onClick={() => { UpdReview(id) }} className="text-sky-300 hover:text-sky-500 font-thin font-thin">Update</Link>
+                    }
+                    {
+                        isLoggedIn
+                        &&
+                        <Link onClick={() => { DelReview(id) }} className="text-red-400 hover:text-red-600 font-thin font-thin">Delete</Link>
+                    }
                 </div>
             </div>
         </>

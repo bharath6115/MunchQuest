@@ -1,14 +1,17 @@
-import Input from "../components/Input"
+import Input from "./Input"
 import { useState } from "react"
 import ButtonStyles from "../utils/ButtonStyles"
 import { InpStyles, DivStyles } from "../utils/InpStyles"
 import { Link } from "react-router"
+import { createUserWithEmailAndPassword} from "firebase/auth"
+import { auth } from "../firebase"
 
 const formStyles = "flex flex-col gap-4 p-6 rounded-2xl bg-white dark:bg-zinc-900 shadow-md border border-zinc-200 dark:border-zinc-700 w-full max-w-xl mx-auto"
 const redirectStyles = "text-sky-300 hover:text-yellow-300 font-thin"
 
-export default function Login() {
+export default function SignUpForm({toggle}) {
     const [data, setData] = useState({
+        Name:"",
         Username: "",
         Password: ""
     })
@@ -27,15 +30,25 @@ export default function Login() {
         })
     }
 
-    const HandleSubmit = ()=>{
-
+    const HandleSubmit = async (e)=>{
+        e.preventDefault();
+        try {
+            const res = await createUserWithEmailAndPassword(auth, data.Username, data.Password);
+            console.log("User signed up:", res.user);
+            // nav("/"); // redirect after signup
+        } catch (err) {
+            console.error("Signup error:", err.message);
+        }
     }
 
     return (
         <>
             <form className={formStyles} onSubmit={HandleSubmit}>
-                <h1 className="text-4xl">Welcome Back!</h1>
-                <h1 className="text-lg text-grey-100 mb-5">Please login into your account</h1>
+                <h1 className="text-4xl">Welcome</h1>
+                <h1 className="text-lg text-grey-100 mb-5">Please enter your details: </h1>
+                <div className={DivStyles}>
+                    <input onChange={UpdData} className={InpStyles} placeholder="Name" type="text" name="Name" id="Name" value={data.Name} />
+                </div>
                 <div className={DivStyles}>
                     <input onChange={UpdData} className={InpStyles} placeholder="Email" type="text" name="Username" id="Username" value={data.Username} />
                 </div>
@@ -48,12 +61,12 @@ export default function Login() {
                         <label htmlFor="ShowPassword">Show Password</label>
                     </div>
                     <div className="flex justify-end items-center">
-                        <Link to="#" className={redirectStyles}>Forgot Password?</Link>
+                        {/* <Link to="#" className={redirectStyles}>Forgot Password?</Link> */}
                     </div>
                 </div>
-                <button className={ButtonStyles}>Login</button>
+                <button className={ButtonStyles}>Sign Up</button>
 
-                <p>Dont have an account? <Link to="/signup" className={redirectStyles}>Sign up</Link></p>
+                <p>Already have an account? <button onClick={()=>{toggle()}} className={redirectStyles}>Log in</button></p>
 
             </form>
         </>

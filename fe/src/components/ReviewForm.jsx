@@ -33,6 +33,7 @@ export default function CreateReview({ rating, message, target, updateReviews, t
             .then(() => {
                 setData({ rating: "", message: "", })
                 updateReviews();    //refetch the reviews
+                if(title) window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"}) //scroll to bottom to show new review.
             }).catch((err) => {
                 console.log(err);
                 nav("/error");

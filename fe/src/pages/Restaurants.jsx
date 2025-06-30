@@ -2,10 +2,12 @@ import axios from "axios"
 import { useState, useEffect } from "react";
 import Card from "../components/card";
 import { useNavigate } from "react-router";
+import { useAuth } from "../services/firebaseMethods";
 
 const Restaurants = () => {
     const [data, setData] = useState([]);
     const nav = useNavigate();
+    const {uid, isLoggedIn } = useAuth();
     useEffect(() => {
         const fetchData = async () => {
             axios.get("/restaurants")
