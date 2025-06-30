@@ -13,7 +13,7 @@ export default function Layout() {
                     onClick={()=>{window.scrollTo({top:0, behavior:"smooth"})}}
                     className="fixed bottom-5 right-5 p-1 rounded-full bg-yellow-400 text-black shadow-lg hover:bg-yellow-500 transition-all"
                 >
-                <FaArrowCircleUp size="25px" color="black"/>
+                <FaArrowCircleUp size="25px" />
                 </button>
             </div>
         </div>

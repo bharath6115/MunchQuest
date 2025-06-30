@@ -47,7 +47,9 @@ router.post("/", async (req, res) => {
     const newReview = new Review(value);
     await newReview.save();
 
+    data.rating = (data.rating*data.reviews.length + newReview.rating)
     data.reviews.push(newReview._id);
+    data.rating = (data.rating / data.reviews.length).toFixed(2);
     await data.save();
 
     res.send(newReview);
@@ -65,6 +67,12 @@ router.delete("/:id", async (req, res) => {
     const ChildData = await Review.findByIdAndDelete(id);
     if (!ChildData) return res.status(404).send("Invalid Review ID")
 
+    if(ParData.reviews.length === 1){
+        ParData.rating = 0;
+    }else{
+        ParData.rating = ((ParData.rating*ParData.reviews.length - ChildData.rating)/(ParData.reviews.length-1)).toFixed(2);
+    }
+
     ParData.reviews = ParData.reviews.filter(e => !e.equals(id))
     await ParData.save();
 
@@ -75,13 +83,23 @@ router.patch("/:id", async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).send("Not a valid review ID");
 
+    const Rest = await Restaurant.findById(req.params.Rid);
+    const Rev = await Review.findById(req.params.id);
+
+    let x = Rev.rating;
+
+    console.log(x);
+
     const { error, value } = ReviewValidation.validate(req.body);
     if (error) return res.status(404).send(error.details);
-
-    const data = await Review.findByIdAndUpdate(req.params.id, value, { new: true,});
+    
+    const data = await Review.findByIdAndUpdate(req.params.id, value, { new: true, runValidators:true});
     if (!data) return res.status(404).send("Invalid Review ID")
-
+        
+    Rest.rating = ((Rest.rating*Rest.reviews.length - x + data.rating)/Rest.reviews.length).toFixed(2);
+    
     await data.save();
+    await Rest.save();
     res.send(data);
 })
 

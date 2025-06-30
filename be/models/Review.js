@@ -11,10 +11,10 @@ const reviewSchema = new mongoose.Schema({
         type: String,
         required:true,
     },
-    // user :{
-    //     type: String,   //firebase ID
-    //     required: true,
-    // },
+    owner :{
+        type: String,   //firebase ID
+        required: true,
+    },
 
 },{timestamps:true})
 

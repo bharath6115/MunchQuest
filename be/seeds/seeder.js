@@ -20,11 +20,14 @@ const seedDB = async()=>{
     
     for(let i=0;i<30;i++){
         const reviews = [];
-        for(let i=0;i<3;i++){
+        let rating=0;
+        for(let i=0;i<4;i++){
             const data= new Review({
                 message: rand(sampleReviews),
-                rating: Math.floor(Math.random()*5)+1
+                rating: Math.floor(Math.random()*5)+1,
+                owner: "3YAqeFigfYXG1lwN8IgUMlWxyN83",
             })
+            rating += data.rating;
             await data.save();
             reviews.push(data._id); //push the ids, not whole data.
         }
@@ -33,6 +36,8 @@ const seedDB = async()=>{
             location : rand(location),
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit nemo praesentium nobis, quam impedit, quidem explicabo nostrum, adipisci laboriosam sed qui consequuntur debitis voluptate rerum natus assumenda deleniti deserunt magni?",
             reviews: reviews,
+            rating: rating/reviews.length,
+            owner:"3YAqeFigfYXG1lwN8IgUMlWxyN83",
         })
         await data.save();
     }

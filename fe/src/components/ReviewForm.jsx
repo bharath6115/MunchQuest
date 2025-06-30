@@ -5,10 +5,11 @@ import ButtonStyles from "../utils/ButtonStyles"
 import formStyles from "../utils/FormStyles"
 import axios from "axios"
 import { motion } from "framer-motion";
+import { useAuth } from "../services/firebaseMethods"
 
-export default function CreateReview({ rating, message, target, updateReviews, title = "" }) {
+export default function CreateReview({ rating, message, target, updateRestaurant, updateReviews, title = "" }) {
     const nav = useNavigate();
-
+    const {uid} = useAuth();
     const [data, setData] = useState({
         rating: rating,
         message: message,
@@ -29,10 +30,12 @@ export default function CreateReview({ rating, message, target, updateReviews, t
     const HandleSubmit = async (e) => {
         e.preventDefault();
         data.rating = parseInt(data.rating);
+        data["owner"] = uid;
         axios.post(target, data)
             .then(() => {
                 setData({ rating: "", message: "", })
                 updateReviews();    //refetch the reviews
+                updateRestaurant();
                 if(title) window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"}) //scroll to bottom to show new review.
             }).catch((err) => {
                 console.log(err);

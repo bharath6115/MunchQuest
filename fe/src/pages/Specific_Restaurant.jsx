@@ -10,7 +10,7 @@ import { useAuth } from '../services/firebaseMethods';
 const Specific_Restaurant = () => {
 
     const { id } = useParams();
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, isAdmin, uid } = useAuth();
     const [restaurantData, setrestaurantData] = useState(null);
     const [reviewsData, setReviewsData] = useState([]);
     const [editReview, setEditReview] = useState({});
@@ -65,12 +65,14 @@ const Specific_Restaurant = () => {
     }
     const UpdReview = async (review_id) => {
         setEditReview(old => { return { ...old, [review_id]: true } })
+        fetchRestaurant();
     }
     const DelReview = (review_id) => {
         axios.post(`/restaurants/${id}/reviews/${review_id}?_method=DELETE`)
             .then(() => {
                 console.log("Review Deleted!")
                 fetchReviews();
+                fetchRestaurant();
             })
             .catch((err) => {
                 console.log(err);
@@ -88,15 +90,16 @@ const Specific_Restaurant = () => {
                 {/* Restaurant Card */}
                 <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700 shadow-xl space-y-2">
                     <h1>{restaurantData.title}</h1>
+                    <h1>⭐{restaurantData.rating}/5</h1>
                     <h2>{restaurantData.location}</h2>
                     <h3>{restaurantData.description}</h3>
                     {
-                        isLoggedIn
+                        (isAdmin || uid==restaurantData.owner)
                         &&
                         <button className={ButtonStyles} onClick={UpdRestaurant}>Update</button>
                     }
                     {
-                        isLoggedIn
+                        (isAdmin || uid==restaurantData.owner)
                         &&
                         <button className={DangerButton} onClick={DelRestaurant}>Delete</button>
                     }
@@ -112,17 +115,16 @@ const Specific_Restaurant = () => {
                         }
                     </div>
 
-                    {newReview && <ReviewForm title="Add a review" rating="" message="" target={`/restaurants/${id}/reviews/`} updateReviews={fetchReviews} />}
+                    {newReview && <ReviewForm title="Add a review" rating="" message="" target={`/restaurants/${id}/reviews/`} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant}/>}
 
                     {/* Review Card */}
-                    {console.log(editReview)}
                     {reviewsData.map((review) => {
                         return (
                             <div key={review._id} className={reviewsStyle}>{
                                 !editReview[review._id] ? //currently not in EDIT state? then render the review else render the edit
-                                    <ShowReview UpdReview={UpdReview} DelReview={DelReview} rating={review.rating} message={review.message} id={review._id} />
+                                    <ShowReview RestaurantOwner={restaurantData.owner} ReviewOwner={review.owner} UpdReview={UpdReview} DelReview={DelReview} rating={review.rating} message={review.message} id={review._id} />
                                     :
-                                    <ReviewForm rating={review.rating} message={review.message} target={`/restaurants/${id}/reviews/${review._id}/?_method=PATCH`} updateReviews={fetchReviews} />
+                                    <ReviewForm rating={review.rating} message={review.message} target={`/restaurants/${id}/reviews/${review._id}/?_method=PATCH`} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant} />
                             }</div>
                         )
                     })}

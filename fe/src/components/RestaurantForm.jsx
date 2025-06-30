@@ -7,23 +7,22 @@ import formStyles from "../utils/FormStyles"
 import { useAuth } from "../services/firebaseMethods"
 
 const RestaurantForm = ({ title = "", location = "", description = "", target, Heading }) => {
-    const { isLoggedIn } = useAuth();
+    const { uid,isLoggedIn } = useAuth();
 
-    if(!isLoggedIn) return <h1>Must be logged in!</h1>
-
+    
     const [data, setData] = useState({
         title: title,
         location: location,
         description: description,
     })
-
+    
     //useEffect to sync the state with the props every time props change.
     useEffect(() => {
         setData({ title, location, description })
     }, [title, location, description])
-
+    
     const navigate = useNavigate();
-
+    
     const updData = (evt) => {
         const target = evt.target.name
         const val = evt.target.value
@@ -31,20 +30,23 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
             return { ...old, [target]: val }
         })
     }
-
+    
     const HandleSubmit = async (e) => {
         e.preventDefault();
+        data["owner"] = uid;
+        data["rating"] = 0;
         axios.post(target, data)
-            .then((res) => {
-                navigate(`/restaurants/${res.data._id}`)
-            })
-            .catch(err => {
-                console.log(err)
-                if (err.status === 404) navigate("/error")
+        .then((res) => {
+            navigate(`/restaurants/${res.data._id}`)
+        })
+        .catch(err => {
+            console.log(err)
+            if (err.status === 404) navigate("/error")
             })
     }
-
-
+    
+    
+    if(!isLoggedIn) return <h1>Must be logged in!</h1>
     return (
         <>
             <form onSubmit={HandleSubmit} className={formStyles}>
