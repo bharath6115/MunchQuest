@@ -94,12 +94,12 @@ const Specific_Restaurant = () => {
                     <h2>{restaurantData.location}</h2>
                     <h3>{restaurantData.description}</h3>
                     {
-                        (isAdmin || uid==restaurantData.owner)
+                        (isAdmin || uid == restaurantData.owner)
                         &&
                         <button className={ButtonStyles} onClick={UpdRestaurant}>Update</button>
                     }
                     {
-                        (isAdmin || uid==restaurantData.owner)
+                        (isAdmin || uid == restaurantData.owner)
                         &&
                         <button className={DangerButton} onClick={DelRestaurant}>Delete</button>
                     }
@@ -109,13 +109,10 @@ const Specific_Restaurant = () => {
                 <div className="border-t-1 border-zinc-600 space-y-4 pt-4">
                     <div className="flex items-center justify-between pt-4 pb-2">
                         <h2 className="text-4xl font-semibold text-yellow-300">✨Reviews</h2>
-                        {
-                            isLoggedIn &&
-                            <button className="btn text-sky-300 hover:text-yellow-300 font-thin text-md" onClick={() => { setNewReview(old => !old) }}>{(newReview ? "X Cancel" : "+ Add Review")}</button>
-                        }
+                        <button className="btn text-sky-300 hover:text-yellow-300 font-thin text-md" onClick={() => { setNewReview(old => !old) }}>{(newReview ? "X Cancel" : "+ Add Review")}</button>
                     </div>
 
-                    {newReview && <ReviewForm title="Add a review" rating="" message="" target={`/restaurants/${id}/reviews/`} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant}/>}
+                    {newReview && <ReviewForm title="Add a review" rating="" message="" target={`/restaurants/${id}/reviews/`} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant} />}
 
                     {/* Review Card */}
                     {reviewsData.map((review) => {

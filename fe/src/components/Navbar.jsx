@@ -3,12 +3,13 @@ import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import { Link } from "react-router";
 import { useAuth } from "../services/firebaseMethods";
+import logo from "../../public/logo.png"
 
 export default function Navbar() {
 
     const { isLoggedIn } = useAuth();
 
-    const navStyle = "bg-zinc-900 text-white border-b border-zinc-800 px-7 py-1 flex items-center justify-between shadow-md";
+    const navStyle = "bg-zinc-900 text-white border-b border-zinc-800 px-2 md:px-7 flex items-center justify-between shadow-md";
     const linkStyles = ({ isActive = false }) => {
         return [
             isActive ? "text-bold" : "",
@@ -19,19 +20,16 @@ export default function Navbar() {
         ].join(" ")
     }
 
-    const LogoStyles = "text-white font-bold text-lg"
-
     return (
         <nav className={navStyle}>
-            <div className="flex items-center p-3 flex-grow">
-                <NavLink to="/" className={LogoStyles}> MunchQuest </NavLink>
+            <div className="flex items-center p-1 flex-grow">
+                <img className="h-[50px] w-[49px]" src={logo} alt="logo" />
+                <NavLink to="/" className="hidden md:block text-white font-bold text-[20px]"> MunchQuest </NavLink>
             </div>
             <div className="flex gap-4 items-center justify-between px-4">
                 <NavLink to="/" className={linkStyles} end> Home </NavLink>
                 <NavLink to="/restaurants" className={linkStyles} end> Restaurants</NavLink>
-                {
-                   isLoggedIn && <NavLink to="/restaurants/new" className={linkStyles} end> Add Restaurant</NavLink>
-                }
+                <NavLink to="/restaurants/new" className={linkStyles} end> Add Restaurant</NavLink>
             </div>
             <div className="flex items-center gap-4 justify-end flex-grow">
                 <button> (~) </button>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import LoginForm from '../components/LoginForm';
 import SignUpForm from '../components/SignUpForm';
 import { useAuth } from '../services/firebaseMethods';
@@ -7,8 +7,11 @@ import { useNavigate } from 'react-router';
 export const Login_Signup = () => {
     const {isLoggedIn} = useAuth();
     const nav = useNavigate();
-    if(isLoggedIn) nav("/")
     const [Login,setLogin] = useState(true);
+
+    useEffect(()=>{
+        if(isLoggedIn) nav("/")
+    },[isLoggedIn])
 
     const toggleForm = ()=>{
         setLogin(old=>!old);
