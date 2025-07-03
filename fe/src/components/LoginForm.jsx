@@ -54,7 +54,7 @@ export default function LoginForm({ toggle }) {
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, data.Username, data.Password);
-            console.log("Logged in:", userCredential.user.uid);
+            // console.log("Logged in:", userCredential.user.uid);
             nav("/");
         } catch (err) {
             console.error(err);

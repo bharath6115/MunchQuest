@@ -1,7 +1,7 @@
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import dotenv from "dotenv"
-dotenv.config();
+dotenv.config({path:"../.env"});
 const raw = JSON.parse(process.env.FIREBASE_ADMIN_KEY);
 
 raw.private_key = raw.private_key.replace(/\\n/g, '\n');

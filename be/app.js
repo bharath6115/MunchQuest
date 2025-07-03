@@ -4,6 +4,7 @@ import override from "method-override"
 import cors from "cors"
 import restaurantsRouter from "./routes/restaurants.js"
 import reviewsRouter from "./routes/reviews.js"
+import menuRouter from "./routes/menu.js"
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -27,3 +28,4 @@ app.get("/", (req, res) => {
 
 app.use("/restaurants",restaurantsRouter)
 app.use("/restaurants/:Rid/reviews",reviewsRouter)
+app.use("/restaurants/:Rid/menu",menuRouter)

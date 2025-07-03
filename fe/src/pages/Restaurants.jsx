@@ -31,7 +31,7 @@ const Restaurants = () => {
         <>
         <h1 className="text-3xl my-7">All Restaurants</h1>
             {data.map((val) => {
-                return <Card key={val["_id"]} id={val._id} title={val.title} description={val.description} location={val.location} />
+                return <Card img={val.images[0]} key={val["_id"]} id={val._id} title={val.title} description={val.description} location={val.location} />
             })}
         </>
     )

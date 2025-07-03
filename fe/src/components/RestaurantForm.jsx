@@ -6,7 +6,7 @@ import ButtonStyles from "../utils/ButtonStyles"
 import formStyles from "../utils/FormStyles"
 import { useAuth } from "../services/firebaseMethods"
 
-const RestaurantForm = ({ title = "", location = "", description = "", target, Heading }) => {
+const RestaurantForm = ({ title = "", location = "", description = "", target, Heading , newForm=false }) => {
     const { uid, isLoggedIn } = useAuth();
 
 
@@ -67,8 +67,11 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
     }
 
     const HandleSubmit = async () => {
-        data["owner"] = uid;
-        data["rating"] = 0;
+        if(newForm){
+            data["owner"] = uid;
+            data["rating"] = 0;
+            data["images"] = ["https://picsum.photos/400?random"]
+        }
         axios.post(target, data)
             .then((res) => {
                 navigate(`/restaurants/${res.data._id}`)

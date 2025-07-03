@@ -7,6 +7,8 @@ const validation = joi.object({
     description: joi.string().required(),
     rating:joi.number(),
     reviews: joi.array(),
+    images: joi.array(),
+    menu: joi.array(),
 })
 
 
