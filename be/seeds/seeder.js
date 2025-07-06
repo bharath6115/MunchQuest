@@ -7,8 +7,10 @@ import mongoose from "mongoose"
 import dotenv from "dotenv"
 
 dotenv.config();
+let URL = "mongodb://localhost:27017/MunchQuest";
+URL = process.env.DB_URL;
 
-mongoose.connect("mongodb://localhost:27017/MunchQuest")
+mongoose.connect(URL)
 .then(()=>console.log("Seeder connected"))
 .catch(e=>{console.log(e)});
 
@@ -27,7 +29,7 @@ const seedDB = async()=>{
         const menu = [];
         let rating=0;
 
-        for(let i=0;i<4;i++){
+        for(let i=0;i<8;i++){
             const data= new Review({
                 message: rand(sampleReviews),
                 rating: Math.floor(Math.random()*5)+1,

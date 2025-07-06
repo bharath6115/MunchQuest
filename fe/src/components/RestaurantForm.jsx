@@ -21,10 +21,13 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
         description: "",
     });
 
+    // const [images,setImages] = useState(null);
+
     //useEffect to sync the state with the props every time props change.
     useEffect(() => {
         setData({ title, location, description })
         setError({ title:"", location:"", description:"" })
+        // setImages(null);
     }, [title, location, description])
 
     const navigate = useNavigate();
@@ -86,7 +89,7 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
     if (!isLoggedIn) return <h1>Must be logged in!</h1>
     return (
         <>
-            <form onSubmit={ValidateData} className={formStyles}>
+            <form onSubmit={ValidateData} className={formStyles} /*encType="multipart/form-data"*/>
                 <h1 className="text-3xl">{Heading}</h1>
                 {Object.entries(data).map(([key, value]) => {
                     return <Input
@@ -97,6 +100,7 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
                         error = {error[key]}
                     />
                 })}
+                {/* <input type="file" accept="image/*" multiple name="images" id="images" onChange={(e)=>{setImages(e.target.files)}}/> */}
                 <button className={ButtonStyles}>Submit</button>
             </form>
         </>

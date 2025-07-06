@@ -5,6 +5,11 @@ import cors from "cors"
 import restaurantsRouter from "./routes/restaurants.js"
 import reviewsRouter from "./routes/reviews.js"
 import menuRouter from "./routes/menu.js"
+import dotenv from "dotenv"
+dotenv.config();
+let URL = "mongodb://localhost:27017/MunchQuest"
+URL = process.env.DB_URL
+
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -13,7 +18,7 @@ app.use(override("_method"));
 
 
 app.listen(3001, () => { console.log("Backend Listening on https://localhost:3001") })
-mongoose.connect("mongodb://localhost:27017/MunchQuest")
+mongoose.connect(URL)
     .then(() => console.log("d.e db connected."))
     .catch(e => { console.log(e) });
 
