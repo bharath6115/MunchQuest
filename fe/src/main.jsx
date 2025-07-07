@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import axios from 'axios'
 
-axios.defaults.baseURL = "http://localhost:3001"
+axios.defaults.baseURL = `${import.meta.env.VITE_BACKEND_BASEURL}`
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

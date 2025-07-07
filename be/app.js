@@ -17,14 +17,15 @@ app.use(express.json());
 app.use(override("_method"));
 
 
-app.listen(3001, () => { console.log("Backend Listening on https://localhost:3001") })
+app.listen(process.env.PORT, () => { console.log("Backend is Live") })
 mongoose.connect(URL)
-    .then(() => console.log("d.e db connected."))
+    .then(() => console.log("Database connected."))
     .catch(e => { console.log(e) });
 
 const config = {
-    origin: "http://localhost:5173"
+    origin: `${process.env.FRONTEND_URL}`
 }
+
 app.use(cors(config));
 
 app.get("/", (req, res) => {
