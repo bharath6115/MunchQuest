@@ -49,7 +49,7 @@ router.post("/", async (req, res) => {
 
     data.rating = (data.rating*data.reviews.length + newReview.rating)
     data.reviews.push(newReview._id);
-    data.rating = (data.rating / data.reviews.length).toFixed(2);
+    data.rating = (data.rating / data.reviews.length);
     await data.save();
 
     res.send(newReview);
@@ -70,7 +70,7 @@ router.delete("/:id", async (req, res) => {
     if(ParData.reviews.length === 1){
         ParData.rating = 0;
     }else{
-        ParData.rating = ((ParData.rating*ParData.reviews.length - ChildData.rating)/(ParData.reviews.length-1)).toFixed(2);
+        ParData.rating = ((ParData.rating*ParData.reviews.length - ChildData.rating)/(ParData.reviews.length-1));
     }
 
     ParData.reviews = ParData.reviews.filter(e => !e.equals(id))
@@ -96,7 +96,7 @@ router.patch("/:id", async (req, res) => {
     const data = await Review.findByIdAndUpdate(req.params.id, value, { new: true, runValidators:true});
     if (!data) return res.status(404).send("Invalid Review ID")
         
-    Rest.rating = ((Rest.rating*Rest.reviews.length - x + data.rating)/Rest.reviews.length).toFixed(2);
+    Rest.rating = ((Rest.rating*Rest.reviews.length - x + data.rating)/Rest.reviews.length);
     
     await data.save();
     await Rest.save();

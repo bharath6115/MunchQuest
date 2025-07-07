@@ -5,10 +5,12 @@ import axios from "axios";
 export const MenuForm = ({val,target,refresh}) => {
     const [Name,setName] = useState("");
     const [error,setError] = useState("");
+    const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(()=>{
         setName(val);
         setError("");
+        setIsProcessing(false);
     },[val]);
 
     const ValidateData = (e)=>{
@@ -23,10 +25,15 @@ export const MenuForm = ({val,target,refresh}) => {
     }
 
     const HandleSubmit = async()=>{
+        
+        if(isProcessing) return;
+        setIsProcessing(true);
+
         axios.post(target,{item:Name})
         .then((res)=>{
             console.log(res);
             setName("");
+            setIsProcessing(false);
             refresh();
         })
         .catch((err)=>{

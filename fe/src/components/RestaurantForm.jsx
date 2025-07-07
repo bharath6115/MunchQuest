@@ -5,6 +5,11 @@ import axios from "axios"
 import ButtonStyles from "../utils/ButtonStyles"
 import formStyles from "../utils/FormStyles"
 import { useAuth } from "../services/firebaseMethods"
+import { images } from "../../../be/seeds/helper"
+
+const rand = (x)=>{
+    return x[Math.floor(Math.random()*x.length)];
+}
 
 const RestaurantForm = ({ title = "", location = "", description = "", target, Heading , newForm=false }) => {
     const { uid, isLoggedIn } = useAuth();
@@ -20,6 +25,7 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
         location: "",
         description: "",
     });
+    const [isProcessing, setIsProcessing] = useState(false);
 
     // const [images,setImages] = useState(null);
 
@@ -27,6 +33,7 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
     useEffect(() => {
         setData({ title, location, description })
         setError({ title:"", location:"", description:"" })
+        setIsProcessing(false);
         // setImages(null);
     }, [title, location, description])
 
@@ -42,6 +49,9 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
 
     const ValidateData = (e) => {
         e.preventDefault();
+
+        if(isProcessing) return;
+        setIsProcessing(true);
 
        const newErrors = {}
 
@@ -63,6 +73,7 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
 
         if(Object.keys(newErrors).length){
             setError(newErrors);
+            setIsProcessing(false);
             return;
         }
 
@@ -70,13 +81,15 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
     }
 
     const HandleSubmit = async () => {
+        const payload = {...data};
         if(newForm){
-            data["owner"] = uid;
-            data["rating"] = 0;
-            data["images"] = ["https://picsum.photos/400?random"]
+            payload["owner"] = uid;
+            payload["rating"] = 0;
+            payload["images"] = [rand(images)]
         }
-        axios.post(target, data)
+        axios.post(target, payload)
             .then((res) => {
+                setIsProcessing(false);
                 navigate(`/restaurants/${res.data._id}`)
             })
             .catch(err => {

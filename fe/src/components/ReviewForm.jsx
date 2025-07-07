@@ -18,10 +18,12 @@ export default function CreateReview({ rating, message, target, updateRestaurant
         rating: "",
         message: "",
     })
+    const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
         setData({ rating, message });
         setError({ rating: "", message: "" });
+        setIsProcessing(false);
     }, [rating, message])
 
     const updData = (evt) => {
@@ -34,6 +36,10 @@ export default function CreateReview({ rating, message, target, updateRestaurant
 
     const ValidateData = (e) => {
         e.preventDefault();
+        
+        if(isProcessing) return;
+        setIsProcessing(true);
+
         const newErrors = {}
 
         if (!data.rating) {
@@ -52,17 +58,20 @@ export default function CreateReview({ rating, message, target, updateRestaurant
         
         if (Object.keys(newErrors).length) {
             setError(newErrors);
+            setIsProcessing(false);
             return;
         }
         HandleSubmit();
     }
     
     const HandleSubmit = async () => {
-        data.rating = parseInt(data.rating);
-        data["owner"] = uid;
-        axios.post(target, data)
+        const payload = {...data};
+        payload.rating = parseInt(payload.rating);
+        payload["owner"] = uid;
+        axios.post(target, payload)
             .then(() => {
                 setData({ rating: "", message: "", })
+                setIsProcessing(false);
                 updateReviews();    //refetch the reviews
                 updateRestaurant();
                 if (title) window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }) //scroll to bottom to show new review.

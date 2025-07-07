@@ -1,4 +1,4 @@
-import {fName,sName,location} from "./helper.js"
+import {fName,sName,location,images} from "./helper.js"
 import { sampleReviews } from "./helper.js";
 import { menuItems } from "./helper.js";
 import Restaurant from "../models/Restaurant.js"
@@ -49,9 +49,9 @@ const seedDB = async()=>{
             location : rand(location),
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit nemo praesentium nobis, quam impedit, quidem exLorem ipsum dolor sit amet consectetur adipisicing elit. Velit nemo praesentium nobis, quam impedit, quidem explicabo nostrum, adipisci laboriosam sed qui consequuntur debitis voluptate rerum natus assumenda deleniti deserunt magniplicabo nostrum, adipisci laboriosam sed qui consequuntur debitis voluptate rerum natus assumenda deleniti deserunt magni?",
             reviews: reviews,
-            rating: rating/reviews.length,
+            rating: (rating/reviews.length),
             owner:process.env.ADMIN_UID,
-            images: ["https://picsum.photos/400?random"],
+            images: [images[i%(images.length)]],
             menu: menu,
         })
         await data.save();

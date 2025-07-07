@@ -12,6 +12,7 @@ export default function Menu({ owner, id }) {
     const [menuExpand, setMenuExpand] = useState(false);
     const [canAddNew, setCanAddNew] = useState(false);
     const [showEdit, setShowEdit] = useState([]);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const FetchMenu = async () => {
         axios.get(`/restaurants/${id}/menu`)
@@ -27,6 +28,7 @@ export default function Menu({ owner, id }) {
     }
     useEffect(() => {
         FetchMenu();
+        setIsProcessing(false);
     }, [id])
 
     const handleEdit = (id) => {
@@ -38,14 +40,20 @@ export default function Menu({ owner, id }) {
     }
 
     const handleDelete = async (Itemid) => {
+        
+        if(isProcessing) return;
+        setIsProcessing(true);
+
         axios.post(`restaurants/${id}/menu/${Itemid}?_method=DELETE`)
             .then(() => {
                 console.log("deleted Item");
+                setIsProcessing(false);
                 FetchMenu();
             })
             .catch((err) => {
                 console.log(err);
             })
+            
     }
 
 

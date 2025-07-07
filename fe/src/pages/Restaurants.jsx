@@ -1,11 +1,14 @@
 import axios from "axios"
 import { useState, useEffect } from "react";
 import Card from "../components/card";
+import { Loading } from "../components/Loading";
 import { useNavigate } from "react-router";
 import { useAuth } from "../services/firebaseMethods";
 
+
 const Restaurants = () => {
     const [data, setData] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
     const nav = useNavigate();
     const {uid, isLoggedIn } = useAuth();
     useEffect(() => {
@@ -13,6 +16,7 @@ const Restaurants = () => {
             axios.get("/restaurants")
                 .then((res) => {
                     setData(res.data)
+                    setIsLoading(false);
                 })
                 .catch((err) => {
                     console.log(err)
@@ -26,7 +30,7 @@ const Restaurants = () => {
     }, [])
 
     // console.log(data);
-
+    if(isLoading) return <Loading/>;
     return (
         <>
         <h1 className="text-3xl my-7">All Restaurants</h1>

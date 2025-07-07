@@ -61,3 +61,26 @@ export const sampleReviews = [
 ];
 
 export const menuItems = ["Butter Chicken", "Paneer Butter Masala", "Chicken Biryani", "Mutton Rogan Josh", "Masala Dosa", "Plain Dosa", "Idli", "Medu Vada", "Sambar", "Vada Pav", "Pav Bhaji", "Chole Bhature", "Rajma Chawal", "Aloo Paratha", "Palak Paneer", "Dal Makhani", "Tandoori Chicken", "Chicken Tikka", "Fish Curry", "Prawn Masala", "Baingan Bharta", "Kadhi Pakora", "Malai Kofta", "Shahi Paneer", "Korma", "Naan", "Garlic Naan", "Tandoori Roti", "Poori", "Chapati", "Bhindi Masala", "Aloo Gobi", "Dum Aloo", "Veg Kolhapuri", "Veg Jalfrezi", "Gobi Manchurian", "Veg Pulao", "Jeera Rice", "Lemon Rice", "Tamarind Rice", "Curd Rice", "Litti Chokha", "Bisi Bele Bath", "Pesarattu", "Upma", "Khichdi", "Pongal", "Dhokla", "Khandvi", "Thepla", "Undhiyu", "Handvo", "Bhel Puri", "Pani Puri", "Sev Puri", "Ragda Pattice", "Aloo Tikki", "Chana Chaat", "Samosa", "Pakora", "Onion Bhaji", "Bread Pakora", "Momos", "Thukpa", "Chow Mein", "Chicken 65", "Chicken Chettinad", "Chicken Rezala", "Egg Curry", "Anda Bhurji", "Macher Jhol", "Sarson Da Saag", "Makki Di Roti", "Nihari", "Keema Matar", "Haleem", "Paya Soup", "Appam with Stew", "Neer Dosa", "Kerala Sadya", "Avial", "Banana Chips", "Misal Pav", "Sabudana Khichdi", "Poha", "Sheera", "Halwa", "Jalebi", "Gulab Jamun", "Rasgulla", "Sandesh", "Kheer", "Phirni", "Kulfi", "Falooda", "Modak", "Ladoo", "Barfi", "Peda"];
+
+export const images=[
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864024/14_jscz2s.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864023/12_l7yokv.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864024/8_zcepvm.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864024/13_zwaemg.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864023/10_woc9ot.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864023/11_omt84d.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864023/5_jkizjh.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864023/9_v1neda.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864023/7_ng9qjl.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864023/6_h2p6lz.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864023/4_zevqtp.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864022/2_tqgrks.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864022/0_c1ohmd.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864022/3_vewnvo.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864022/1_lji5en.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864563/exterior-view-building_305343-42088_hpllfi.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864610/360_F_202146408_lJIlhogmEkLWLQUWScU9zPdKWrgpIE1u_vkpxy9.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751864611/cafe-brick-walls-green-canopy-260nw-386619214_z2iykx.webp",
+    "https://res.cloudinary.com/dysk6v0ag/image/upload/v1751890204/360_F_668380954_3krhgtwcZr7nGROtEYJgzdQgOkd20APK_zomycl.webp",
+
+]
