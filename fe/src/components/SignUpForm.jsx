@@ -4,10 +4,11 @@ import ButtonStyles from "../utils/ButtonStyles"
 import { Link } from "react-router"
 import { createUserWithEmailAndPassword } from "firebase/auth"
 import { auth } from "../firebase"
+import toast from "react-hot-toast"
 
-const formStyles = "flex flex-col gap-4 p-6 rounded-2xl bg-white dark:bg-zinc-900 shadow-md border border-zinc-200 dark:border-zinc-700 w-full max-w-xl mx-auto"
+const formStyles = "flex flex-col gap-4 p-6 rounded-2xl bg-zinc-900 shadow-md border border-zinc-700 w-full max-w-xl mx-auto"
 const redirectStyles = "text-sky-300 hover:text-yellow-300 font-thin"
-const BaseStyles = "w-full px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100  focus:outline-none focus:ring-2 focus:ring-yellow-300 transition"
+const BaseStyles = "w-full px-4 py-2 rounded-xl border border-zinc-600 bg-zinc-800 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition"
 const DivStyles = "flex flex-col gap-2 items-start"
 
 export default function SignUpForm({ toggle }) {
@@ -17,6 +18,7 @@ export default function SignUpForm({ toggle }) {
         Password: ""
     })
     const [showPass, setShowPass] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState({
         Name: "",
         Email: "",
@@ -39,6 +41,10 @@ export default function SignUpForm({ toggle }) {
 
     const ValidateData = (e) => {
         e.preventDefault();
+        
+        if(isProcessing) return;
+        setIsProcessing(true);
+
         const newErrors = {}
 
         if (!data.Name) {
@@ -59,6 +65,7 @@ export default function SignUpForm({ toggle }) {
 
         if (Object.keys(newErrors).length) {
             setError(newErrors);
+            setIsProcessing(false);
             return;
         }
 
@@ -68,10 +75,14 @@ export default function SignUpForm({ toggle }) {
     const HandleSubmit = async () => {
         try {
             const res = await createUserWithEmailAndPassword(auth, data.Email, data.Password);
-            console.log("User signed up:", res.user);
-            // nav("/"); // redirect after signup
+            // console.log("User signed up:", res.user);
+            nav("/"); // redirect after signup
+            toast.success("Sucessfully Signed Up!")
         } catch (err) {
             console.error("Signup error:", err.message);
+            toast.error(err.message);
+        }finally{
+            setIsProcessing(false);
         }
     }
 

@@ -6,6 +6,7 @@ import ButtonStyles from "../utils/ButtonStyles"
 import formStyles from "../utils/FormStyles"
 import { useAuth } from "../services/firebaseMethods"
 import { images } from "../../../be/seeds/helper"
+import toast from "react-hot-toast"
 
 const rand = (x)=>{
     return x[Math.floor(Math.random()*x.length)];
@@ -91,6 +92,7 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
             .then((res) => {
                 setIsProcessing(false);
                 navigate(`/restaurants/${res.data._id}`)
+                toast.success(`Restaurant ${!newForm ? "updated":"added"} sucessfully!`)
             })
             .catch(err => {
                 console.log(err)

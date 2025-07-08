@@ -1,5 +1,5 @@
 import './App.css'
-import { createBrowserRouter, RouterProvider } from "react-router"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Home from './pages/Home.jsx'
 import Restaurants from "./pages/Restaurants.jsx"
 import Specific_Restaurant from './pages/Specific_Restaurant.jsx'

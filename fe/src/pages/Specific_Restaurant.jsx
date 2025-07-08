@@ -7,6 +7,7 @@ import ShowReview from "../components/ShowReview";
 import { useAuth } from '../services/firebaseMethods';
 import Menu from "../components/Menu";
 import { Loading } from "../components/Loading";
+import toast from "react-hot-toast";
 
 const Specific_Restaurant = () => {
 
@@ -70,6 +71,7 @@ const Specific_Restaurant = () => {
                 console.log("delted")
                 setIsProcessing(false);
                 nav("/restaurants")
+                toast.success("Restaurant has been deleted.")
             })
             .catch(err => console.log(err));
     }
@@ -88,6 +90,7 @@ const Specific_Restaurant = () => {
                 fetchReviews();
                 fetchRestaurant();
                 setIsProcessing(false);
+                toast.success("Review has been deleted.")
             })
             .catch((err) => {
                 console.log(err);

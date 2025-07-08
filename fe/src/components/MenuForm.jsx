@@ -45,7 +45,7 @@ export const MenuForm = ({val,target,refresh}) => {
         setName(e.target.value)
     }
 
-     const  BaseStyles = "w-50 px-2 py-2 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition flex-grow"
+     const  BaseStyles = "w-50 px-2 py-2 rounded-xl border border-zinc-600 bg-zinc-800 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition flex-grow"
     
     const BorderStyles = (error.length===0 ? "" : " outline-2 outline-red-500");
 

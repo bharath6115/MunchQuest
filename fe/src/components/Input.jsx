@@ -3,7 +3,7 @@ export default function Input({ name, value, placeholder = "", type = "text", fn
     //error can be undefined, length>0, length=0.
     //undefined if no error is found, 0 for initial render, >0 if error present.
     
-    const  BaseStyles = "w-full px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100  focus:outline-none focus:ring-2 focus:ring-yellow-300 transition"
+    const  BaseStyles = "w-full px-4 py-2 rounded-xl border border-zinc-600 bg-zinc-800 text-zinc-100  focus:outline-none focus:ring-2 focus:ring-yellow-300 transition"
     
     const BorderStyles = (error===undefined ? " outline-2 outline-green-500": (error.length===0 ? "" : " outline-2 outline-red-500"));
 

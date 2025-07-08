@@ -4,6 +4,7 @@ import Card from "../components/card";
 import { Loading } from "../components/Loading";
 import { useNavigate } from "react-router";
 import { useAuth } from "../services/firebaseMethods";
+import toast from "react-hot-toast";
 
 
 const Restaurants = () => {
@@ -22,6 +23,7 @@ const Restaurants = () => {
                     console.log(err)
                     if (err.status === 404) {
                         nav("/error")
+                        toast.error(err);
                     }
                 });
         }

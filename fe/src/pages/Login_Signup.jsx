@@ -3,6 +3,7 @@ import LoginForm from '../components/LoginForm';
 import SignUpForm from '../components/SignUpForm';
 import { useAuth } from '../services/firebaseMethods';
 import { useNavigate } from 'react-router';
+import toast from 'react-hot-toast';
 
 export const Login_Signup = () => {
     const {isLoggedIn} = useAuth();
@@ -10,7 +11,7 @@ export const Login_Signup = () => {
     const [Login,setLogin] = useState(true);
 
     useEffect(()=>{
-        if(isLoggedIn) nav("/")
+        if(isLoggedIn){nav("/");}
     },[isLoggedIn])
 
     const toggleForm = ()=>{

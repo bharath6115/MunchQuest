@@ -1,5 +1,5 @@
 import {fName,sName,location,images} from "./helper.js"
-import { sampleReviews } from "./helper.js";
+import { sampleReviews, reviewsWithRating } from "./helper.js";
 import { menuItems } from "./helper.js";
 import Restaurant from "../models/Restaurant.js"
 import Review from "../models/Review.js";
@@ -29,12 +29,8 @@ const seedDB = async()=>{
         const menu = [];
         let rating=0;
 
-        for(let i=0;i<8;i++){
-            const data= new Review({
-                message: rand(sampleReviews),
-                rating: Math.floor(Math.random()*5)+1,
-                owner: process.env.ADMIN_UID,
-            })
+        for(let i=0;i<10;i++){
+            const data = new Review({...(rand(reviewsWithRating)),["owner"]: process.env.ADMIN_UID});
             await data.save();
             rating += data.rating;
             reviews.push(data._id); //push the ids, not whole data.

@@ -3,10 +3,11 @@ import ButtonStyles from "../utils/ButtonStyles"
 import { Link, useNavigate } from "react-router"
 import { auth } from "../firebase"
 import { signInWithEmailAndPassword } from "firebase/auth"
+import toast from "react-hot-toast"
 
-const formStyles = "flex flex-col gap-4 p-6 rounded-2xl bg-white dark:bg-zinc-900 shadow-md border border-zinc-200 dark:border-zinc-700 w-full max-w-xl mx-auto"
+const formStyles = "flex flex-col gap-4 p-6 rounded-2xl bg-zinc-900 shadow-md border border-zinc-700 w-full max-w-xl mx-auto"
 const redirectStyles = "text-sky-300 hover:text-yellow-300 font-thin"
-const BaseStyles = "w-full px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100  focus:outline-none focus:ring-2 focus:ring-yellow-300 transition"
+const BaseStyles = "w-full px-4 py-2 rounded-xl border border-zinc-600 bg-zinc-800 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition"
 const DivStyles = "flex flex-col gap-2 items-start"
 
 export default function LoginForm({ toggle }) {
@@ -14,8 +15,9 @@ export default function LoginForm({ toggle }) {
         Username: "",
         Password: ""
     })
-    const [showPass, setShowPass] = useState(false);
     const [error, setError] = useState({ Username: "", Password: "" });
+    const [showPass, setShowPass] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const nav = useNavigate();
 
     const TogglePassword = () => {
@@ -33,6 +35,10 @@ export default function LoginForm({ toggle }) {
 
     const ValidateData = (e) => {
         e.preventDefault();
+        
+        if(isProcessing) return;
+        setIsProcessing(true);
+
         const newErrors = {}
 
         if (!data.Username) {
@@ -44,6 +50,7 @@ export default function LoginForm({ toggle }) {
 
         if (Object.keys(newErrors).length) {
             setError(newErrors);
+            setIsProcessing(false);
             return;
         }
 
@@ -56,9 +63,13 @@ export default function LoginForm({ toggle }) {
             const userCredential = await signInWithEmailAndPassword(auth, data.Username, data.Password);
             // console.log("Logged in:", userCredential.user.uid);
             nav("/");
+            toast.success("Login successful!")
         } catch (err) {
             console.error(err);
+            toast.error("Invalid credentials");
             setError({ "Auth": "Incorrect Username/Password!" });
+        }finally{
+            setIsProcessing(false);
         }
     }
 
