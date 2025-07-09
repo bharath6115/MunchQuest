@@ -54,11 +54,11 @@ export const MenuForm = ({val,target,refresh}) => {
     const ButtonStyles = "border-2 text-black rounded-lg max-w-100 bg-sky-300 hover:bg-sky-500 px-2 py-1 my-3 mx-auto transition-colors duration-150 text-md"
 
     return (
-        <form onSubmit={ValidateData} className="flex items-center justify-between gap-2">
+        <form onSubmit={ValidateData} className="flex flex-col items-center justify-between gap-2 sm:flex-row">
             {/* <label htmlFor="Name">Name: </label> */}
             <input className={InpStyles} onChange={UpdName} type="text" name="Name" id="Name" value={Name} />
-            <button className={ButtonStyles}>Submit</button>
             {error && <span className="text-sm text-red-400">{error}</span>}
+            <button className={ButtonStyles}>Submit</button>
         </form>
     )
 }

@@ -22,8 +22,9 @@ const NavLinks = () => {
     return (
         <>
             <NavLink to="/" className={linkStyles} end> Home </NavLink>
-            <NavLink to="/restaurants" className={linkStyles} end> Restaurants</NavLink>
-            <NavLink to="/restaurants/new" className={linkStyles} end> Add Restaurant</NavLink>
+            <NavLink to="/restaurants" className={linkStyles} > Restaurants</NavLink>
+            {/* <NavLink to="/restaurants/new" className={linkStyles} end> Add Restaurant</NavLink> */}
+            <NavLink to="/faq" className={linkStyles} end> FAQ </NavLink>
         </>
     )
 }

@@ -7,13 +7,15 @@ import formStyles from "../utils/FormStyles"
 import { useAuth } from "../services/firebaseMethods"
 import { images } from "../../../be/seeds/helper"
 import toast from "react-hot-toast"
+import { Loading } from "./Loading"
 
-const rand = (x)=>{
-    return x[Math.floor(Math.random()*x.length)];
+const rand = (x) => {
+    return x[Math.floor(Math.random() * x.length)];
 }
 
-const RestaurantForm = ({ title = "", location = "", description = "", target, Heading , newForm=false }) => {
+const RestaurantForm = ({ title = "", location = "", description = "", target, Heading, newForm = false }) => {
     const { uid, isLoggedIn } = useAuth();
+    const [isLoading, setIsLoading] = useState(true);
 
 
     const [data, setData] = useState({
@@ -33,8 +35,9 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
     //useEffect to sync the state with the props every time props change.
     useEffect(() => {
         setData({ title, location, description })
-        setError({ title:"", location:"", description:"" })
+        setError({ title: "", location: "", description: "" })
         setIsProcessing(false);
+        setIsLoading(false);
         // setImages(null);
     }, [title, location, description])
 
@@ -51,10 +54,10 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
     const ValidateData = (e) => {
         e.preventDefault();
 
-        if(isProcessing) return;
+        if (isProcessing) return;
         setIsProcessing(true);
 
-       const newErrors = {}
+        const newErrors = {}
 
         if (!data.title) {
             newErrors.title = "Title is required.";
@@ -72,7 +75,7 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
             newErrors.description = "Description must be longer than 5 characters";
         }
 
-        if(Object.keys(newErrors).length){
+        if (Object.keys(newErrors).length) {
             setError(newErrors);
             setIsProcessing(false);
             return;
@@ -82,8 +85,8 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
     }
 
     const HandleSubmit = async () => {
-        const payload = {...data};
-        if(newForm){
+        const payload = { ...data };
+        if (newForm) {
             payload["owner"] = uid;
             payload["rating"] = 0;
             payload["images"] = [rand(images)]
@@ -92,15 +95,19 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
             .then((res) => {
                 setIsProcessing(false);
                 navigate(`/restaurants/${res.data._id}`)
-                toast.success(`Restaurant ${!newForm ? "updated":"added"} sucessfully!`)
+                toast.success(`Restaurant ${!newForm ? "updated" : "added"} sucessfully!`)
             })
             .catch(err => {
-                console.log(err)
-                if (err.status === 404) navigate("/error")
+                setIsProcessing(false);
+                const status = err.response?.status;
+
+                toast.error("Something went wrong! Please try again.");
+                console.error("Submit error:", err);
+                if (status === 404) return navigate("/error");
             })
     }
 
-
+    if (isLoading) return <Loading />
     if (!isLoggedIn) return <h1>Must be logged in!</h1>
     return (
         <>
@@ -112,11 +119,11 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
                         name={key}
                         value={value}
                         fn={updData}
-                        error = {error[key]}
+                        error={error[key]}
                     />
                 })}
                 {/* <input type="file" accept="image/*" multiple name="images" id="images" onChange={(e)=>{setImages(e.target.files)}}/> */}
-                <button className={ButtonStyles}>Submit</button>
+                <button className={ButtonStyles} disabled={isProcessing}>Submit</button>
             </form>
         </>
     )

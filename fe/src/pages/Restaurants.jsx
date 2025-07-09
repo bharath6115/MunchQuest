@@ -5,13 +5,14 @@ import { Loading } from "../components/Loading";
 import { useNavigate } from "react-router";
 import { useAuth } from "../services/firebaseMethods";
 import toast from "react-hot-toast";
+import { Link } from "react-router";
 
 
 const Restaurants = () => {
     const [data, setData] = useState([]);
-    const [isLoading,setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const nav = useNavigate();
-    const {uid, isLoggedIn } = useAuth();
+    const { uid, isLoggedIn } = useAuth();
     useEffect(() => {
         const fetchData = async () => {
             axios.get("/restaurants")
@@ -32,10 +33,13 @@ const Restaurants = () => {
     }, [])
 
     // console.log(data);
-    if(isLoading) return <Loading/>;
+    if (isLoading) return <Loading />;
     return (
         <>
-        <h1 className="text-3xl my-7">All Restaurants</h1>
+            <div className="w-5/6 flex justify-between items-center">
+                <h1 className="text-3xl my-7">All Restaurants</h1>
+                <Link to="/restaurants/new" className="mt-1 text-lg text-sky-300 font-thin hover:text-yellow-400">+ Add New</Link>
+            </div>
             {data.map((val) => {
                 return <Card img={val.images[0]} key={val["_id"]} id={val._id} title={val.title} description={val.description} location={val.location} />
             })}

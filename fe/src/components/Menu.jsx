@@ -61,14 +61,14 @@ export default function Menu({ owner, id }) {
         <div>
 
             {/* Menu dropdown */}
-            <div className="text-left text-2xl cursor-pointer flex items-center justify-between pt-4 border-t-1 border-zinc-500" onClick={() => { setMenuExpand(old => !old) }}>
+            <div className="text-2xl cursor-pointer flex items-center justify-between pt-4 border-t-1 border-zinc-500" onClick={() => { setMenuExpand(old => !old) }}>
                 <p>Menu</p>
                 <p className="pt-2">{menuExpand ? <MdExpandLess /> : <MdExpandMore />}</p>
             </div>
 
             {/* MenuExpand */}
             {menuExpand &&
-                <div className="flex flex-col gap-1 mt-3 bg-zinc-800 p-4 rounded-lg border border-zinc-700">
+                <div className="text-left overflow-hidden flex flex-col gap-1 mt-3 bg-zinc-800 p-4 rounded-lg border border-zinc-700">
                     {data.map((item, ItemID) => {
                         return (
                             <div key={ItemID} className="flex items-center justify-between px-2 py-1 hover:bg-zinc-700 rounded-md transition-colors">
@@ -99,7 +99,7 @@ export default function Menu({ owner, id }) {
                         (isAdmin || owner === uid)
                         &&
                         <>
-                            <button className="text-sky-300 hover:text-sky-400 mt-3 self-start underline transition" onClick={() => { setCanAddNew(old => !old) }}> {canAddNew ? "Cancel" : "Add new item"} </button>
+                            <button className="text-md font-thin text-sky-300 hover:text-yellow-400 mt-3 self-start transition" onClick={() => { setCanAddNew(old => !old) }}> {canAddNew ? "X Cancel" : "+ Add new item"} </button>
                             {canAddNew && <MenuForm refresh={FetchMenu} val="" target={`restaurants/${id}/menu`} />}
                         </>
                     }
