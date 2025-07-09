@@ -9,7 +9,7 @@ import Layout from './components/Layout.jsx'
 import Edit_Restaurant from "./pages/Edit_Restaurant.jsx"
 import { Login_Signup } from './pages/Login_Signup.jsx'
 import { AuthProvider } from './services/firebaseMethods.jsx'
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 import FAQ from './pages/FAQ.jsx'
 
 const router = createBrowserRouter([
