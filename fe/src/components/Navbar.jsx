@@ -4,8 +4,10 @@ import { signOut } from "firebase/auth";
 import { Link } from "react-router";
 import { useAuth } from "../services/firebaseMethods";
 import logo from "../../public/logo.png"
-import { IoMenuOutline } from "react-icons/io5";
+import { IoMenuOutline, IoSearch } from "react-icons/io5";
 import { useEffect, useState } from "react";
+import SearchBox from "./SearchBox";
+import ButtonStyles from "../utils/ButtonStyles";
 
 const linkStyles = ({ isActive = false }) => {
     return [
@@ -19,11 +21,14 @@ const linkStyles = ({ isActive = false }) => {
 
 const NavLinks = () => {
 
+    const { isAdmin } = useAuth();
+
     return (
         <>
             <NavLink to="/" className={linkStyles} end> Home </NavLink>
             <NavLink to="/restaurants" className={linkStyles} > Restaurants</NavLink>
             {/* <NavLink to="/restaurants/new" className={linkStyles} end> Add Restaurant</NavLink> */}
+            {isAdmin && <NavLink to="/verify">Verify Panel</NavLink>}
             <NavLink to="/faq" className={linkStyles} end> FAQ </NavLink>
         </>
     )
@@ -33,13 +38,14 @@ export default function Navbar() {
 
     const { isLoggedIn } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [searchOpen,setSearchOpen] = useState(false);
 
     useEffect(() => {
-        document.body.style.overflow = menuOpen ? "hidden" : "auto";
-    }, [menuOpen]);
+        document.body.style.overflow = (menuOpen || searchOpen) ? "hidden" : "auto";
+    }, [menuOpen,searchOpen]);
 
     return (
-        <nav className="relative z-50 bg-zinc-900 text-white border-b border-zinc-800 px-2 md:px-7 flex items-center justify-between shadow-md" >
+        <nav className="relative z-50 bg-zinc-900 text-white border-b border-zinc-800 px-2 py-1 md:px-7 flex items-center justify-between shadow-md" >
             {/* mobile nav */}
             <div className="block md:hidden flex flex-grow items-center justify-start pl-3 text-4xl">
                 <IoMenuOutline className={`${menuOpen && "text-yellow-300"}`} onClick={() => { setMenuOpen(old => !old) }} />
@@ -54,7 +60,7 @@ export default function Navbar() {
                 }
             </div>
             {/* Logo */}
-            <div className="flex items-center p-1 flex-grow justify-center md:justify-start">
+            <div className="flex flex-grow items-center justify-center md:justify-start">
                 <img className="h-[50px] w-[49px]" src={logo} alt="Website logo" />
                 <NavLink to="/" className="text-white font-bold text-[20px]"> MunchQuest </NavLink>
             </div>
@@ -62,8 +68,19 @@ export default function Navbar() {
             <div className=" hidden md:flex gap-4 items-center justify-between px-4">
                 <NavLinks />
             </div>
-            {/* login */}
-            <div className="flex items-center gap-4 justify-end flex-grow">
+            {/* search bar + login */}
+            <div className="flex flex-grow items-center gap-4 justify-end">
+                <div>
+                    <button
+                        className={"border-2 border-zinc-900 text-white rounded-lg bg-zinc-800 hover:bg-zinc-700 px-3 py-1 transition-colors duration-150 flex items-center justify-center gap-1"}
+                        onClick={()=>{setSearchOpen(true)}}
+                    >
+                        <IoSearch />
+                        <span className="hidden xsm:inline">Search</span>
+                    </button>
+                    {searchOpen && <SearchBox setSearchOpen={setSearchOpen}/>}
+
+                </div>
                 {
                     isLoggedIn ?
                         <Link to="/" onClick={async () => { await signOut(auth) }} className="text-bold hover:text-yellow-300 text-white "> Sign out </Link>

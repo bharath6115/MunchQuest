@@ -11,33 +11,47 @@ import { Link } from "react-router";
 const Restaurants = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [showAll, setShowAll] = useState(false);
     const nav = useNavigate();
     const { uid, isLoggedIn } = useAuth();
-    useEffect(() => {
-        const fetchData = async () => {
-            axios.get("/restaurants")
-                .then((res) => {
-                    setData(res.data)
-                    setIsLoading(false);
-                })
-                .catch((err) => {
-                    console.log(err)
-                    if (err.status === 404) {
-                        nav("/error")
-                        toast.error(err);
-                    }
-                });
-        }
 
-        fetchData();
+    const fetchData = async (target) => {
+        axios.get(target)
+            .then((res) => {
+                setData(res.data)
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                console.log(err)
+                if (err.status === 404) {
+                    nav("/error")
+                    toast.error(err);
+                }
+            });
+    }
+
+    useEffect(() => {
+        fetchData("/restaurants/verified");
     }, [])
+
+
+    const SliderStyle = "border border-zinc-500 px-3 py-1"
 
     // console.log(data);
     if (isLoading) return <Loading />;
     return (
         <>
             <div className="w-5/6 flex justify-between items-center">
-                <h1 className="text-3xl my-7">All Restaurants</h1>
+                <div className="flex text-2xl mt-3">
+                    <button
+                        className={`${SliderStyle} rounded-l-lg ${showAll ? "" : "bg-zinc-700"}`}
+                        onClick={ ()=>{fetchData("/restaurants/verified"); setShowAll(false);}}
+                    >Verified Restaurants</button>
+                    <button
+                        className={`${SliderStyle} rounded-r-lg ${showAll ? "bg-zinc-700" : ""}`}
+                        onClick={ ()=>{fetchData("/restaurants");  setShowAll(true);}}
+                    >All Restaurants</button>
+                </div>
                 <Link to="/restaurants/new" className="mt-1 text-lg text-sky-300 font-thin hover:text-yellow-400">+ Add New</Link>
             </div>
             {data.map((val) => {

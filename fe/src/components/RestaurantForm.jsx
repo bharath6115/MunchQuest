@@ -8,14 +8,16 @@ import { useAuth } from "../services/firebaseMethods"
 import { images } from "../../../be/seeds/helper"
 import toast from "react-hot-toast"
 import { Loading } from "./Loading"
+const DangerButton = ButtonStyles.replace("bg-sky-300", "bg-red-400").replace("hover:bg-sky-500", "hover:bg-red-500")
 
 const rand = (x) => {
     return x[Math.floor(Math.random() * x.length)];
 }
 
-const RestaurantForm = ({ title = "", location = "", description = "", target, Heading, newForm = false }) => {
+const RestaurantForm = ({ title = "", location = "", description = ""}) => {
     const { uid, isLoggedIn } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
+    const nav = useNavigate();
 
 
     const [data, setData] = useState({
@@ -86,16 +88,16 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
 
     const HandleSubmit = async () => {
         const payload = { ...data };
-        if (newForm) {
-            payload["owner"] = uid;
-            payload["rating"] = 0;
-            payload["images"] = [rand(images)]
-        }
-        axios.post(target, payload)
+        payload["owner"] = uid;
+        payload["rating"] = 0;
+        payload["images"] = [rand(images)];
+        payload["reserveSeat"] = "Reserve a seat";
+        payload["isVerified"] = false;
+        axios.post("/restaurants", payload)
             .then((res) => {
                 setIsProcessing(false);
                 navigate(`/restaurants/${res.data._id}`)
-                toast.success(`Restaurant ${!newForm ? "updated" : "added"} sucessfully!`)
+                toast.success(`Restaurant added sucessfully!`)
             })
             .catch(err => {
                 setIsProcessing(false);
@@ -112,7 +114,8 @@ const RestaurantForm = ({ title = "", location = "", description = "", target, H
     return (
         <>
             <form onSubmit={ValidateData} className={formStyles} /*encType="multipart/form-data"*/>
-                <h1 className="text-3xl">{Heading}</h1>
+                <button type="button" onClick={()=>{nav("/restaurants")}} className="p-0 m-0 self-end text-md hover:text-red-500" disabled={isProcessing}>Cancel</button>
+                <h1 className="text-3xl">Add new restaurant</h1>
                 {Object.entries(data).map(([key, value]) => {
                     return <Input
                         key={key}

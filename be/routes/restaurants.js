@@ -4,7 +4,7 @@ import Restaurant from "../models/Restaurant.js";
 import Review from "../models/Review.js";
 import RestaurantValidation from "../models/RestaurantValidation.js";
 
-const router = express.Router({mergeParams:true});
+const router = express.Router({ mergeParams: true });
 
 /*
 1.Fetch all restaurants
@@ -18,9 +18,26 @@ router.get("/", async (req, res) => {
     const data = await Restaurant.find();
     res.send(data);
 })
+router.get("/verified", async (req, res) => {
+    const data = await Restaurant.find({ isVerified: true });
+    res.send(data);
+})
+router.get("/notVerified", async (req, res) => {
+    const data = await Restaurant.find({ isVerified: false });
+    res.send(data);
+})
+router.get("/queries", async (req, res) => {
+    const { query } = req.query;
+    if (!query) return res.status(400).json({ error: "Query string required" });
+
+    const data = await Restaurant.find({
+        title: { $regex: query, $options: 'i' } // Case-insensitive partial match
+    }).limit(10);
+    res.send(data);
+})
 
 router.get("/:id", async (req, res) => {
-    
+
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).send("Invalid ID");
 
     const data = await Restaurant.findById(req.params.id);
@@ -31,7 +48,7 @@ router.get("/:id", async (req, res) => {
 })
 
 router.post("/", async (req, res) => {
-    
+
     const { value, error } = RestaurantValidation.validate(req.body);
     if (error) return res.status(404).send(error.details)
 
@@ -42,31 +59,31 @@ router.post("/", async (req, res) => {
 })
 
 router.delete("/:id", async (req, res) => {
-    
+
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).send("Invalid ID, cant Delete.");
 
     const data = await Restaurant.findById(req.params.id)
     if (!data) return res.status(404).send("Cant Delete.")
 
-    
+
     //delete all reviews associated with the restaurant.
     await Promise.all(data.reviews.map(reviewId => Review.findByIdAndDelete(reviewId)));
 
     await Restaurant.findByIdAndDelete(req.params.id);
-    
+
     res.status(200).json({ message: "Deleted" });
 })
 
 router.patch("/:id", async (req, res) => {
-    
+
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).send("Invalid ID");
-    
+
     const { value, error } = RestaurantValidation.validate(req.body);
     if (error) return res.status(404).send(error.details)
-    
+
     const data = await Restaurant.findByIdAndUpdate(req.params.id, value, { new: true, runValidators: true });
     if (!data) return res.status(404).send("Invalid data")
-    
+
     await data.save();
     res.status(200).json(data);
 })

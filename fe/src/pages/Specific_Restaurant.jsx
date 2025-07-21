@@ -1,25 +1,29 @@
 import axios from "axios"
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useParams } from "react-router";
 import ReviewForm from "../components/ReviewForm";
-import ShowReview from "../components/ShowReview";
+import ReviewHero from "../components/ReviewHero";
 import { useAuth } from '../services/firebaseMethods';
 import Menu from "../components/Menu";
 import { Loading } from "../components/Loading";
+import RestaurantHero from "../components/RestaurantHero";
 import toast from "react-hot-toast";
+import RestaurantUpdate from "../components/RestaurantUpdate";
 
 const Specific_Restaurant = () => {
 
     const { id } = useParams();
     const { isLoggedIn, isAdmin, uid } = useAuth();
     const [restaurantData, setrestaurantData] = useState(null);
+    const [editRestaurant, setEditRestaurant] = useState(false);
     const [reviewsData, setReviewsData] = useState([]);
     const [editReview, setEditReview] = useState({});
     const [newReview, setNewReview] = useState(false);
     const [isLoading,setIsLoading] = useState(true);
     const [isProcessing,setIsProcessing] = useState(false);
     const nav = useNavigate();
+    const location = useLocation();
 
     const fetchReviews = async () => {
         axios.get(`/restaurants/${id}/reviews`)
@@ -56,11 +60,30 @@ const Specific_Restaurant = () => {
     useEffect(() => {
         fetchRestaurant();
         fetchReviews();
-    }, [])
+    }, [location])
+
+    useEffect(()=>{
+        setIsLoading(false);
+    },[editRestaurant])
 
     const UpdRestaurant = () => {
-        nav(`/Restaurants/${id}/edit`);
+        // setIsLoading(true);
+        setEditRestaurant(true);
     }
+    const VerifyRestaurant = ()=>{
+
+        if(isProcessing) return;
+        setIsProcessing(true);
+
+        axios.post(`/restaurants/${id}?_method=PATCH`, {isVerified:true})
+            .then((res) => {
+                setIsProcessing(false);
+                fetchRestaurant();
+                console.log(res);
+            })
+            .catch(err => console.log(err));
+    }
+
     const DelRestaurant = async () => {
         
         if(isProcessing) return;
@@ -102,7 +125,7 @@ const Specific_Restaurant = () => {
     const ButtonStyles = "border-2 text-black rounded-lg max-w-100 min-w-30 bg-sky-300 hover:bg-sky-500 px-3 py-1 my-3 transition-colors duration-150"
     const DangerButton = ButtonStyles.replace("bg-sky-300", "bg-red-400").replace("hover:bg-sky-500", "hover:bg-red-500")
 
-    // console.log(restaurantData);
+    console.log(restaurantData);
 
     if(isLoading) return <Loading/>
 
@@ -110,34 +133,13 @@ const Specific_Restaurant = () => {
         <>
             <div className="max-w-[1280px] w-5/6 text-white px-6 py-10 space-y-4">
 
-                {/* Restaurant Card */}
-                <div className="flex flex-col items-center lg:flex-row bg-zinc-800 p-6 rounded-xl border border-zinc-700 shadow-xl gap-6">
-                    <div className="lg:min-w-[400px]">
-                        <img className="rounded-lg object-cover" src={restaurantData.images[0]} alt="restaurant" />
-                    </div>
-                    <div className="flex flex-col space-y-2 text-zinc-300 text-left flex-grow w-full">
+                {
+                    editRestaurant ? 
+                    <RestaurantUpdate restaurantData={restaurantData} setEditRestaurant={setEditRestaurant} id={id} fetchRestaurant={fetchRestaurant}/>
+                    :
+                    <RestaurantHero restaurantData={restaurantData} UpdRestaurant={UpdRestaurant} DelRestaurant={DelRestaurant} VerifyRestaurant={VerifyRestaurant}/>
+                }
 
-                        <h1 className="self-end text-yellow-300">⭐{restaurantData.rating.toFixed(1)}/5 <span className="text-zinc-300">({restaurantData.reviews.length})</span></h1>
-                        <h1 className="text-4xl">{restaurantData.title}</h1>
-                        <h2 className="text-md mb-6">{restaurantData.location}</h2>
-                        <h3 className="my-4">{restaurantData.description}</h3>
-                        <button className="border-2 text-black rounded-lg bg-sky-400 hover:bg-yellow-300 px-3 py-1 w-35 transition-colors duration-150"> Reserve a seat </button>
-                        <div className="mt-auto flex flex-row justify-end">
-                            {
-                                (isAdmin || uid == restaurantData.owner)
-                                &&
-                                <button className={ButtonStyles} onClick={UpdRestaurant}>Update</button>
-                            }
-                            {
-                                (isAdmin || uid == restaurantData.owner)
-                                &&
-                                <button className={DangerButton} onClick={DelRestaurant}>Delete</button>
-                            }
-                        </div>
-                    </div>
-                </div>
-
-                {/* Menu */}
                 <Menu owner={restaurantData.owner} id={id} />
 
                 {/* Reviews Section */}
@@ -150,11 +152,12 @@ const Specific_Restaurant = () => {
                     {newReview && <ReviewForm title="Add a review" rating="" message="" target={`/restaurants/${id}/reviews/`} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant} />}
 
                     {/* Review Card */}
+
                     {reviewsData.map((review) => {
                         return (
                             <div key={review._id} className={reviewsStyle}>{
                                 !editReview[review._id] ? //currently not in EDIT state? then render the review else render the edit
-                                    <ShowReview RestaurantOwner={restaurantData.owner} ReviewOwner={review.owner} UpdReview={UpdReview} DelReview={DelReview} rating={review.rating} message={review.message} id={review._id} />
+                                    <ReviewHero RestaurantOwner={restaurantData.owner} ReviewOwner={review.owner} UpdReview={UpdReview} DelReview={DelReview} rating={review.rating} message={review.message} id={review._id} />
                                     :
                                     <ReviewForm rating={review.rating} message={review.message} target={`/restaurants/${id}/reviews/${review._id}/?_method=PATCH`} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant} />
                             }</div>

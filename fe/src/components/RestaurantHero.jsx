@@ -1,0 +1,48 @@
+import { useAuth } from "../services/firebaseMethods"
+import { MdOutlineVerified } from "react-icons/md";
+
+
+export default function RestaurantHero({ restaurantData, UpdRestaurant, DelRestaurant, VerifyRestaurant }) {
+    const { isAdmin, uid } = useAuth();
+    const ButtonStyles = "border-2 text-black rounded-lg max-w-100 min-w-30 bg-sky-300 hover:bg-sky-500 px-3 py-1 my-1 xsm:my-3 transition-colors duration-150"
+    const DangerButton = ButtonStyles.replace("bg-sky-300", "bg-red-400").replace("hover:bg-sky-500", "hover:bg-red-500")
+    const VerifyButton = ButtonStyles.replace("bg-sky-300", "bg-violet-500").replace("hover:bg-sky-500", "hover:bg-violet-600")
+
+    return (
+        <div className="flex flex-col items-center lg:flex-row bg-zinc-800 p-6 rounded-xl border border-zinc-700 shadow-xl gap-6">
+            <div className="lg:min-w-[400px]">
+                <img className="rounded-lg object-cover" src={restaurantData.images[0]} alt="restaurant" />
+            </div>
+            <div className="flex flex-col space-y-2 text-zinc-300 text-left flex-grow w-full">
+
+                <h1 className="self-end text-yellow-300">⭐{restaurantData.rating.toFixed(1)}/5 <span className="text-zinc-300">({restaurantData.reviews.length})</span></h1>
+
+                <h1 className="text-4xl flex flex-row gap-1">
+                    {restaurantData.title}
+                    {restaurantData.isVerified && <MdOutlineVerified className="text-yellow-300 text-[26px]"/>}
+                </h1>
+                <h2 className="text-md mb-6">{restaurantData.location}</h2>
+                
+                <h3 className="my-4">{restaurantData.description}</h3>
+                
+                <button className="self-start inline-block border-2 text-black rounded-lg bg-sky-400 hover:bg-yellow-300 px-3 py-1 transition-colors duration-150"> {restaurantData.reserveSeat} </button>
+                
+                <div className="self-end mt-auto flex flex-col xsm:flex-row justify-end">
+                    {
+                        (isAdmin && !restaurantData.isVerified)
+                        &&
+                        <button type="button" className={VerifyButton} onClick={VerifyRestaurant}>Verify</button>
+                    }
+                    {
+                        (isAdmin || uid == restaurantData.owner)
+                        &&
+                        <>
+                        <button className={ButtonStyles} onClick={UpdRestaurant}>Update</button>
+                        <button className={DangerButton} onClick={DelRestaurant}>Delete</button>
+                        </>
+                    }
+                </div>
+            </div>
+        </div>
+    )
+}

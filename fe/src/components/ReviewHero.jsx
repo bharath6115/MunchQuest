@@ -1,7 +1,7 @@
 import { Link } from "react-router"
 import { useAuth } from "../services/firebaseMethods.jsx";
 
-export default function ShowReview({ UpdReview, DelReview, rating, message, id, RestaurantOwner, ReviewOwner }) {
+export default function ReviewHero({ UpdReview, DelReview, rating, message, id, RestaurantOwner, ReviewOwner }) {
     const { isLoggedIn, isAdmin, uid } = useAuth();
     return (
         <>
@@ -12,9 +12,9 @@ export default function ShowReview({ UpdReview, DelReview, rating, message, id, 
             <div className="flex">
                 <p className="flex-grow text-zinc-200">"{message}"</p>
 
-                {/* show the UD options only to hotel owners, admins, user who made the review. */}
+                {/* show the UD options only to admins, user who made the review. */}
                 <div className="space-x-2 flex flex-row items-end">
-                    {(isAdmin || uid == RestaurantOwner || uid == ReviewOwner) &&
+                    {(isAdmin || uid == ReviewOwner) &&
                         <>
                             <Link onClick={() => { UpdReview(id) }} className="text-sky-300 hover:text-sky-500 font-thin font-thin">Update</Link>
                             <Link onClick={() => { DelReview(id) }} className="text-red-400 hover:text-red-600 font-thin font-thin">Delete</Link>

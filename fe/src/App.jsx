@@ -3,14 +3,14 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Home from './pages/Home.jsx'
 import Restaurants from "./pages/Restaurants.jsx"
 import Specific_Restaurant from './pages/Specific_Restaurant.jsx'
-import Create_Restaurant from './pages/Create_Restaurant.jsx'
+import CreateRestaurant from './pages/CreateRestaurant.jsx'
 import ErrorPage from "./pages/ErrorPage.jsx"
 import Layout from './components/Layout.jsx'
-import Edit_Restaurant from "./pages/Edit_Restaurant.jsx"
 import { Login_Signup } from './pages/Login_Signup.jsx'
 import { AuthProvider } from './services/firebaseMethods.jsx'
 import { Analytics } from "@vercel/analytics/react"
 import FAQ from './pages/FAQ.jsx'
+import VerifyPanel from "./pages/VerifyPanel.jsx"
 
 const router = createBrowserRouter([
 
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/restaurants/new",
-        element: <Create_Restaurant />,
+        element: <CreateRestaurant />,
         errorElement: <ErrorPage />
       },
       {
@@ -54,9 +54,9 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />
       },
       {
-        path: "/restaurants/:id/edit",
-        element: <Edit_Restaurant />,
-        errorElement: <ErrorPage />
+        path:"/verify",
+        element: <VerifyPanel/>,
+        errorElement: <ErrorPage/>
       },
       {
         path: "*",

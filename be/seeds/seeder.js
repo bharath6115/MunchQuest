@@ -1,5 +1,5 @@
 import {fName,sName,location,images} from "./helper.js"
-import { sampleReviews, reviewsWithRating } from "./helper.js";
+import { reviewsWithRating } from "./helper.js";
 import { menuItems } from "./helper.js";
 import Restaurant from "../models/Restaurant.js"
 import Review from "../models/Review.js";
@@ -46,7 +46,9 @@ const seedDB = async()=>{
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit nemo praesentium nobis, quam impedit, quidem exLorem ipsum dolor sit amet consectetur adipisicing elit. Velit nemo praesentium nobis, quam impedit, quidem explicabo nostrum, adipisci laboriosam sed qui consequuntur debitis voluptate rerum natus assumenda deleniti deserunt magniplicabo nostrum, adipisci laboriosam sed qui consequuntur debitis voluptate rerum natus assumenda deleniti deserunt magni?",
             reviews: reviews,
             rating: (rating/reviews.length),
+            reserveSeat:"Reserve a seat",
             owner:process.env.ADMIN_UID,
+            isVerified: true,
             images: [images[i%(images.length)]],
             menu: menu,
         })
