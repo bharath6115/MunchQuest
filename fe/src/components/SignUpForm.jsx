@@ -1,10 +1,11 @@
 import Input from "./Input"
 import { useState } from "react"
 import ButtonStyles from "../utils/ButtonStyles"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { createUserWithEmailAndPassword } from "firebase/auth"
 import { auth } from "../firebase"
 import toast from "react-hot-toast"
+import axios from "axios"
 
 const formStyles = "flex flex-col gap-4 p-6 rounded-2xl bg-zinc-900 shadow-md border border-zinc-700 w-full max-w-xl mx-auto"
 const redirectStyles = "text-sky-300 hover:text-yellow-300 font-thin"
@@ -24,6 +25,7 @@ export default function SignUpForm({ toggle }) {
         Email: "",
         Password: ""
     });
+    const nav = useNavigate();
 
 
     const TogglePassword = () => {
@@ -41,8 +43,8 @@ export default function SignUpForm({ toggle }) {
 
     const ValidateData = (e) => {
         e.preventDefault();
-        
-        if(isProcessing) return;
+
+        if (isProcessing) return;
         setIsProcessing(true);
 
         const newErrors = {}
@@ -57,7 +59,7 @@ export default function SignUpForm({ toggle }) {
         }
         if (!data.Password) {
             newErrors.Password = "Password is required."
-        } else if (!/[A-Z]/.test(data.Password)){
+        } else if (!/[A-Z]/.test(data.Password)) {
             newErrors.Password = "Password must have atleast 1 capital letter!"
         } else if (data.Password.length < 6) {
             newErrors.Password = "Password must be atleast 6 characters long!"
@@ -75,16 +77,24 @@ export default function SignUpForm({ toggle }) {
     const HandleSubmit = async () => {
         try {
             const res = await createUserWithEmailAndPassword(auth, data.Email, data.Password);
-            // console.log("User signed up:", res.user);
-            nav("/"); // redirect after signup
-            toast.success("Sucessfully Signed Up!")
+            const user = res.user;
+
+            await axios.post("/users", {
+                username: data.Name,
+                email: data.Email,
+                uid: user.uid,
+            });
+
+            nav("/");
+            toast.success("Successfully Signed Up!");
         } catch (err) {
             console.error("Signup error:", err.message);
             toast.error(err.message);
-        }finally{
+        } finally {
             setIsProcessing(false);
         }
-    }
+    };
+
 
 
 

@@ -42,7 +42,7 @@ const Restaurants = () => {
     return (
         <>
             <div className="w-5/6 flex justify-between items-center">
-                <div className="flex text-2xl mt-3">
+                <div className="flex text-md sm:text-2xl mt-3">
                     <button
                         className={`${SliderStyle} rounded-l-lg ${showAll ? "" : "bg-zinc-700"}`}
                         onClick={ ()=>{fetchData("/restaurants/verified"); setShowAll(false);}}

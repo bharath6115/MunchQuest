@@ -1,13 +1,15 @@
 import { NavLink } from "react-router"
-import { auth } from "../firebase";
-import { signOut } from "firebase/auth";
 import { Link } from "react-router";
 import { useAuth } from "../services/firebaseMethods";
 import logo from "../../public/logo.png"
 import { IoMenuOutline, IoSearch } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import SearchBox from "./SearchBox";
-import ButtonStyles from "../utils/ButtonStyles";
+import ProfileCard from "./ProfileCard"
+import NotificationsCard from "./NotificationsCard"
+import { CgProfile } from "react-icons/cg";
+import { FaRegBell } from "react-icons/fa";
+import axios from "axios";
 
 const linkStyles = ({ isActive = false }) => {
     return [
@@ -28,7 +30,7 @@ const NavLinks = () => {
             <NavLink to="/" className={linkStyles} end> Home </NavLink>
             <NavLink to="/restaurants" className={linkStyles} > Restaurants</NavLink>
             {/* <NavLink to="/restaurants/new" className={linkStyles} end> Add Restaurant</NavLink> */}
-            {isAdmin && <NavLink to="/verify">Verify Panel</NavLink>}
+            {isAdmin && <NavLink to="/verify" className={linkStyles}>Verify Panel</NavLink>}
             <NavLink to="/faq" className={linkStyles} end> FAQ </NavLink>
         </>
     )
@@ -36,13 +38,33 @@ const NavLinks = () => {
 
 export default function Navbar() {
 
-    const { isLoggedIn } = useAuth();
+    const { uid, isLoggedIn } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
-    const [searchOpen,setSearchOpen] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [data, setData] = useState({});
+
+    const fetchData = async () => {
+        axios.get(`/users/${uid}`)
+            .then((res) => {
+                setData(res.data);
+                setShowProfile(false);
+                setShowNotifications(false);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+    useEffect(() => {
+        if (isLoggedIn) fetchData();
+    }, [isLoggedIn])
 
     useEffect(() => {
         document.body.style.overflow = (menuOpen || searchOpen) ? "hidden" : "auto";
-    }, [menuOpen,searchOpen]);
+    }, [menuOpen, searchOpen]);
+
+    // { console.log(data) };
 
     return (
         <nav className="relative z-50 bg-zinc-900 text-white border-b border-zinc-800 px-2 py-1 md:px-7 flex items-center justify-between shadow-md" >
@@ -73,17 +95,25 @@ export default function Navbar() {
                 <div>
                     <button
                         className={"border-2 border-zinc-900 text-white rounded-lg bg-zinc-800 hover:bg-zinc-700 px-3 py-1 transition-colors duration-150 flex items-center justify-center gap-1"}
-                        onClick={()=>{setSearchOpen(true)}}
+                        onClick={() => { setSearchOpen(true) }}
                     >
                         <IoSearch />
                         <span className="hidden xsm:inline">Search</span>
                     </button>
-                    {searchOpen && <SearchBox setSearchOpen={setSearchOpen}/>}
+                    {searchOpen && <SearchBox setSearchOpen={setSearchOpen} />}
 
                 </div>
                 {
                     isLoggedIn ?
-                        <Link to="/" onClick={async () => { await signOut(auth) }} className="text-bold hover:text-yellow-300 text-white "> Sign out </Link>
+                        <div className="gap-4 flex items-center justify-center">
+
+                            <button aria-label="Notifications" className="text-2xl" onClick={() => { setShowProfile(false); setShowNotifications(old => !old) }}> <FaRegBell /> </button>
+                            {showNotifications && <NotificationsCard />}
+
+                            <button aria-label="User Details" className="text-2xl" onClick={() => { setShowNotifications(false); setShowProfile(old => !old) }}> <CgProfile /> </button>
+                            {showProfile && <ProfileCard data={data} />}
+
+                        </div>
                         :
                         <NavLink to="/login" className={linkStyles} end> Login </NavLink>
                 }

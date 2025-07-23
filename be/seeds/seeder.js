@@ -3,6 +3,7 @@ import { reviewsWithRating } from "./helper.js";
 import { menuItems } from "./helper.js";
 import Restaurant from "../models/Restaurant.js"
 import Review from "../models/Review.js";
+import User from "../models/Users.js";
 import mongoose from "mongoose"
 import dotenv from "dotenv"
 
@@ -54,6 +55,18 @@ const seedDB = async()=>{
         })
         await data.save();
     }
+    await seedUsers();
+}
+
+const seedUsers = async ()=>{
+    await User.deleteMany({});
+    await User.insertMany([
+        {"username":"Admin","uid":"3YAqeFigfYXG1lwN8IgUMlWxyN83","email":"admin@gmail.com"},
+        {"username":"User","uid":"sxKvdQj41YQ28LzFipMFHd0upnN2","email":"user@gmail.com"},
+        {"username":"Test","uid":"haVBgayWBhgKZeJRaNqaxvirwB42","email":"test@gmail.com"},
+        {"username":"Thanusha","uid":"msbxJ7HbxWahPGIjFxbxq99hAWD3","email":"thanu@gmail.com"},
+        {"username":"ramki","uid":"X5xhKu2XvNez2noJ9leOWijikSy2","email":"r@gmail.com"},
+    ])
 }
 
 seedDB()

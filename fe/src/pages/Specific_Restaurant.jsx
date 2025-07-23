@@ -125,7 +125,7 @@ const Specific_Restaurant = () => {
     const ButtonStyles = "border-2 text-black rounded-lg max-w-100 min-w-30 bg-sky-300 hover:bg-sky-500 px-3 py-1 my-3 transition-colors duration-150"
     const DangerButton = ButtonStyles.replace("bg-sky-300", "bg-red-400").replace("hover:bg-sky-500", "hover:bg-red-500")
 
-    console.log(restaurantData);
+    // console.log(restaurantData);
 
     if(isLoading) return <Loading/>
 

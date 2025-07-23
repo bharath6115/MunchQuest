@@ -5,6 +5,8 @@ import cors from "cors"
 import restaurantsRouter from "./routes/restaurants.js"
 import reviewsRouter from "./routes/reviews.js"
 import menuRouter from "./routes/menu.js"
+import userRouter from "./routes/user.js"
+import notificationRouter from "./routes/notification.js"
 import dotenv from "dotenv"
 dotenv.config();
 let URL = "mongodb://localhost:27017/MunchQuest"
@@ -35,3 +37,5 @@ app.get("/", (req, res) => {
 app.use("/restaurants",restaurantsRouter)
 app.use("/restaurants/:Rid/reviews",reviewsRouter)
 app.use("/restaurants/:Rid/menu",menuRouter)
+app.use("/users",userRouter)
+app.use("/users/:uid/notifications",notificationRouter)

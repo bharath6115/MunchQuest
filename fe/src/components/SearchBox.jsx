@@ -1,8 +1,7 @@
 import { IoSearch } from "react-icons/io5";
-import { InpStyles } from "../utils/InpStyles"
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 function LoadingCircle() {
@@ -73,7 +72,7 @@ export default function SearchBox({ setSearchOpen }) {
             <div className="w-9/10 sm:w-1/2 h-11/20 bg-zinc-750 rounded-xl" onClick={(e) => e.stopPropagation()}>
 
                 {/* searchbar */}
-                <form onSubmit={() => { }} className="flex items-center justify-center gap-2 px-3 py-1 border-b-2 border-zinc-600">
+                <form onSubmit={(e) => { e.preventDefault() }} className="flex items-center justify-center gap-2 px-3 py-1 border-b-2 border-zinc-600">
                     <label htmlFor="query" className="text-lg">{isLoading ? <LoadingCircle /> : <IoSearch />}</label>
                     <input type="text" name="query" id="query" placeholder="Search" className="w-full px-1 py-2 text-zinc-100 focus:outline-none transition" value={query} onChange={(e) => { setQuery(e.target.value) }} autoFocus />
                 </form>
@@ -87,6 +86,7 @@ export default function SearchBox({ setSearchOpen }) {
                             </Link>
                         )
                     })}
+                    {data.length === 0 && <h1 className="font-thin text-2xl my-auto">No data available!</h1> }
                 </div>
             </div>
         </div>
