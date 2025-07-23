@@ -19,12 +19,15 @@ const RestaurantSchema = new mongoose.Schema({
     },
     rating : {
         type: Number,
+        default: 0,
     },
     reserveSeat:{
         type: String,
+        default: "Reserve a seat"
     },
     isVerified:{
         type: Boolean,
+        default: false,
     },
     reviews:[
         {

@@ -108,6 +108,7 @@ export default function Navbar() {
                         <div className="gap-4 flex items-center justify-center">
 
                             <button aria-label="Notifications" className="text-2xl" onClick={() => { setShowProfile(false); setShowNotifications(old => !old) }}> <FaRegBell /> </button>
+                            {/* {data.unreadNotificationsCount !== 0 && <div className="absolute top-4 right-17 w-[9px] h-[9px] bg-white rounded-full"></div>} */}
                             {showNotifications && <NotificationsCard />}
 
                             <button aria-label="User Details" className="text-2xl" onClick={() => { setShowNotifications(false); setShowProfile(old => !old) }}> <CgProfile /> </button>
