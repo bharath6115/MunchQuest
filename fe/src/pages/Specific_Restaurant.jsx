@@ -137,7 +137,7 @@ const Specific_Restaurant = () => {
                     editRestaurant ? 
                     <RestaurantUpdate restaurantData={restaurantData} setEditRestaurant={setEditRestaurant} id={id} fetchRestaurant={fetchRestaurant}/>
                     :
-                    <RestaurantHero restaurantData={restaurantData} UpdRestaurant={UpdRestaurant} DelRestaurant={DelRestaurant} VerifyRestaurant={VerifyRestaurant}/>
+                    <RestaurantHero restaurantData={restaurantData} UpdRestaurant={UpdRestaurant} DelRestaurant={DelRestaurant} VerifyRestaurant={VerifyRestaurant} id={id}/>
                 }
 
                 <Menu owner={restaurantData.owner} id={id} />

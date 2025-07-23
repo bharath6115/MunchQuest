@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../services/firebaseMethods";
 import toast from "react-hot-toast";
 import axios from "axios";
-
+import { Link } from "react-router";
 //optimisation:
 //instead of refetching data always, update the data present after sending axios request. update the readMore according to size
 
+//to batch fetch: https://chatgpt.com/s/t_6880e450510c8191bde6e2e8787a6731
 export default function NotificationsCard() {
 
     const [data, setData] = useState([]);
@@ -13,6 +14,8 @@ export default function NotificationsCard() {
     const [isProcessing, setIsProcessing] = useState(false);
     const { uid } = useAuth();
     const [readMore, setReadMore] = useState([])
+    const [restaurantsMap, setRestaurantsMap] = useState({});
+    const [usersMap, setUsersMap] = useState({});
 
     const fetchNotifications = async () => {
         setIsLoading(true);
@@ -20,6 +23,16 @@ export default function NotificationsCard() {
             const res = await axios.get(`/users/${uid}/notifications`);
             setData(res.data);
             setReadMore(Array(res.data.length).fill(false));
+
+            //Batch fetch the required details in a single request
+            const ids = [...new Set(res.data.map(n => n.restaurantID))];
+            const restaurantsMap = await axios.get(`/restaurants/batch/${ids.join(",")}`);
+            setRestaurantsMap(restaurantsMap.data);
+
+            const uids = [...new Set(res.data.map(n => n.from))];
+            const usersMap = await axios.get(`/users/batch/${uids.join(",")}`);
+            setUsersMap(usersMap.data);
+
         } catch (err) {
             console.error(err);
             toast.error("Error while fetching notifications.");
@@ -91,6 +104,9 @@ export default function NotificationsCard() {
     }
 
     const Styles = "hover:underline px-1 text-sm self-start"
+    console.log(data);
+    console.log(restaurantsMap);
+    console.log(usersMap);
 
     return (
         <div className="absolute top-12 right-12 md:right-15 min-w-80 bg-zinc-750 rounded-lg px-1 ">
@@ -109,7 +125,10 @@ export default function NotificationsCard() {
                     {data.map((notif, ind) => {
                         return (
                             <div className={`flex flex-col gap-1 items-center justify-center font-zinc-200 bg-zinc-800 rounded-lg my-2 mx-1 px-3 py-1 border-1 ${!notif.isRead ? "border-yellow-300" : "border-zinc-800"} `} key={notif._id}>
-                                <button onClick={() => DeleteNotif(notif._id)} className="self-end text-sm text-red-400 hover:text-red-600">✕</button>
+                                <div className="flex w-full items-center justify-between">
+                                    <h1 className="text-md text-zinc-300">{usersMap[notif.from]?.username || "Unknown User"}</h1>
+                                    <button onClick={() => DeleteNotif(notif._id)} className="self-end text-sm text-red-400 hover:text-red-600">✕</button>
+                                </div>
                                 {
                                     !readMore[ind] &&
                                     <>
@@ -119,12 +138,14 @@ export default function NotificationsCard() {
                                 {
                                     readMore[ind] &&
                                     <>
-                                        <h1>{notif.from}</h1>
-                                        <h1>{notif.message} on {notif.reservationDate}</h1>
+
+                                        <h1>{notif.message} on {new Date(notif.reservationDate).toLocaleDateString("en-GB")}</h1>
+                                        <span>at <Link to={`restaurants/${notif.restaurantID}`} className="hover:underline">
+                                            {restaurantsMap[notif.restaurantID].title}</Link> </span>
                                     </>
                                 }
                                 <div className="flex w-full items-center justify-between">
-                                    <button className={Styles} onClick={() => { ToggleShowMore(ind) }}>{readMore[ind] ? "Show Less":"Show More"}</button>
+                                    <button className={Styles} onClick={() => { ToggleShowMore(ind) }}>{readMore[ind] ? "Show Less" : "Show More"}</button>
                                     {!notif.isRead && <button className={Styles} onClick={() => { UpdNotif(notif._id) }}>Mark as read</button>}
                                 </div>
                             </div>

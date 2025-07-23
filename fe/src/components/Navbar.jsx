@@ -1,5 +1,4 @@
 import { NavLink } from "react-router"
-import { Link } from "react-router";
 import { useAuth } from "../services/firebaseMethods";
 import logo from "../../public/logo.png"
 import { IoMenuOutline, IoSearch } from "react-icons/io5";
@@ -107,11 +106,11 @@ export default function Navbar() {
                     isLoggedIn ?
                         <div className="gap-4 flex items-center justify-center">
 
-                            <button aria-label="Notifications" className="text-2xl" onClick={() => { setShowProfile(false); setShowNotifications(old => !old) }}> <FaRegBell /> </button>
+                            <button aria-label="Notifications" className={`text-2xl ${showNotifications && "text-yellow-300"}`} onClick={() => { setShowProfile(false); setShowNotifications(old => !old) }}> <FaRegBell /> </button>
                             {/* {data.unreadNotificationsCount !== 0 && <div className="absolute top-4 right-17 w-[9px] h-[9px] bg-white rounded-full"></div>} */}
                             {showNotifications && <NotificationsCard />}
 
-                            <button aria-label="User Details" className="text-2xl" onClick={() => { setShowNotifications(false); setShowProfile(old => !old) }}> <CgProfile /> </button>
+                            <button aria-label="User Details" className={`text-2xl ${showProfile && "text-yellow-300"}`} onClick={() => { setShowNotifications(false); setShowProfile(old => !old) }}> <CgProfile /> </button>
                             {showProfile && <ProfileCard data={data} />}
 
                         </div>

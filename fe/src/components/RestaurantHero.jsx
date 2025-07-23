@@ -4,7 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useState } from "react";
 
-export default function RestaurantHero({ restaurantData, UpdRestaurant, DelRestaurant, VerifyRestaurant }) {
+export default function RestaurantHero({id, restaurantData, UpdRestaurant, DelRestaurant, VerifyRestaurant }) {
     const { isAdmin, uid, isLoggedIn } = useAuth();
     const [showReservationForm, setShowReservationForm] = useState(false);
     const [selectedDate, setSelectedDate] = useState("");
@@ -18,6 +18,7 @@ export default function RestaurantHero({ restaurantData, UpdRestaurant, DelResta
             from: uid,
             message: `Request to reserve seat`,
             reservationDate: `${selectedDate}`,
+            restaurantID: id,
             isRead: false,
         };
 

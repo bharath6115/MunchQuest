@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Restaurant from "./Restaurant.js"
 
 const userSchema = new mongoose.Schema({
     username:{
@@ -30,6 +31,11 @@ const userSchema = new mongoose.Schema({
             },
             reservationDate:{
                 type:String,
+                required:true,
+            },
+            restaurantID:{
+                type: mongoose.Schema.Types.ObjectId,
+                ref:"Restaurant",
                 required:true,
             },
             isRead:{

@@ -36,6 +36,17 @@ router.get("/queries", async (req, res) => {
     res.send(data);
 })
 
+router.get("/batch/:ids", async (req,res)=>{
+    const ids = req.params.ids.split(',');
+    if(!ids || ids.length === 0) return res.send("Invalid ids")
+
+    const data = await Restaurant.find({ _id: { $in: ids } });
+    const map = {};
+    data.forEach(r => map[r._id] = r);
+
+    res.send(map);
+})
+
 router.get("/:id", async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).send("Invalid ID");
