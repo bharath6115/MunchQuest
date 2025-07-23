@@ -24,6 +24,8 @@ export default function NotificationsCard() {
             setData(res.data);
             setReadMore(Array(res.data.length).fill(false));
 
+            if(res.data.length===0) return;
+
             //Batch fetch the required details in a single request
             const ids = [...new Set(res.data.map(n => n.restaurantID))];
             const restaurantsMap = await axios.get(`/restaurants/batch/${ids.join(",")}`);
@@ -104,9 +106,9 @@ export default function NotificationsCard() {
     }
 
     const Styles = "hover:underline px-1 text-sm self-start"
-    console.log(data);
-    console.log(restaurantsMap);
-    console.log(usersMap);
+    // console.log(data);
+    // console.log(restaurantsMap);
+    // console.log(usersMap);
 
     return (
         <div className="absolute top-12 right-12 md:right-15 min-w-80 bg-zinc-750 rounded-lg px-1 ">
