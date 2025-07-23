@@ -4,7 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useState } from "react";
 
-export default function RestaurantHero({id, restaurantData, UpdRestaurant, DelRestaurant, VerifyRestaurant }) {
+export default function RestaurantHero({ id, restaurantData, UpdRestaurant, DelRestaurant, VerifyRestaurant }) {
     const { isAdmin, uid, isLoggedIn } = useAuth();
     const [showReservationForm, setShowReservationForm] = useState(false);
     const [selectedDate, setSelectedDate] = useState("");
@@ -12,8 +12,8 @@ export default function RestaurantHero({id, restaurantData, UpdRestaurant, DelRe
     const HandleReserve = async (e) => {
         e.preventDefault();
         if (!selectedDate) return toast.error("Date cannot be empty.");
-        if(!isLoggedIn) return toast.error("Must be logged in!");
-        
+        if (!isLoggedIn) return toast.error("Must be logged in!");
+
         const payload = {
             from: uid,
             message: `Request to reserve seat`,
@@ -64,14 +64,17 @@ export default function RestaurantHero({id, restaurantData, UpdRestaurant, DelRe
                         {restaurantData.reserveSeat}
                     </button>
                 ) : (
-                    <form onSubmit={HandleReserve} className="flex gap-1">
+                    <form onSubmit={HandleReserve} className="flex items-start xsm:items-center flex-col xsm:flex-row gap-1">
                         <input
                             type="date"
                             value={selectedDate}
                             onChange={(e) => setSelectedDate(e.target.value)}
+                            className="bg-zinc-750 rounded-lg px-2 py-1"
                         />
-                        <button type="submit" className="border-2 text-black rounded-lg bg-sky-300 hover:bg-sky-500 px-3 py-1 transition-colors duration-150">Reserve</button>
-                        <button type="button" className="border-2 text-black rounded-lg bg-red-400 hover:bg-red-500 px-3 py-1 transition-colors duration-150" onClick={() => setShowReservationForm(false)}>Cancel</button>
+                        <div>
+                            <button type="submit" className="border-2 text-black rounded-lg bg-sky-300 hover:bg-sky-500 px-3 py-1 transition-colors duration-150">Reserve</button>
+                            <button type="button" className="border-2 text-black rounded-lg bg-red-400 hover:bg-red-500 px-3 py-1 transition-colors duration-150" onClick={() => setShowReservationForm(false)}>Cancel</button>
+                        </div>
                     </form>
                 )}
 

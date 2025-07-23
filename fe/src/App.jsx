@@ -11,6 +11,7 @@ import { AuthProvider } from './services/firebaseMethods.jsx'
 import { Analytics } from "@vercel/analytics/react"
 import FAQ from './pages/FAQ.jsx'
 import VerifyPanel from "./pages/VerifyPanel.jsx"
+import Profile from './pages/profile.jsx'
 
 const router = createBrowserRouter([
 
@@ -36,6 +37,11 @@ const router = createBrowserRouter([
       {
         path: "/faq",
         element: <FAQ />,
+        errorElement: <ErrorPage />
+      },
+      {
+        path: "/profile/:uid",
+        element: <Profile />,
         errorElement: <ErrorPage />
       },
       {

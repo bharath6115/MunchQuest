@@ -128,7 +128,7 @@ export default function NotificationsCard() {
                         return (
                             <div className={`flex flex-col gap-1 items-center justify-center font-zinc-200 bg-zinc-800 rounded-lg my-2 mx-1 px-3 py-1 border-1 ${!notif.isRead ? "border-yellow-300" : "border-zinc-800"} `} key={notif._id}>
                                 <div className="flex w-full items-center justify-between">
-                                    <h1 className="text-md text-zinc-300">{usersMap[notif.from]?.username || "Unknown User"}</h1>
+                                    <Link to={`/profile/${notif.from}`} className="hover:underline text-md text-zinc-300">{usersMap[notif.from]?.username || "Unknown User"}</Link>
                                     <button onClick={() => DeleteNotif(notif._id)} className="self-end text-sm text-red-400 hover:text-red-600">✕</button>
                                 </div>
                                 {
