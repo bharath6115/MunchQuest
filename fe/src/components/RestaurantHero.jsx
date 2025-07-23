@@ -5,14 +5,15 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 
 export default function RestaurantHero({ restaurantData, UpdRestaurant, DelRestaurant, VerifyRestaurant }) {
-    const { isAdmin, uid } = useAuth();
+    const { isAdmin, uid, isLoggedIn } = useAuth();
     const [showReservationForm, setShowReservationForm] = useState(false);
     const [selectedDate, setSelectedDate] = useState("");
 
     const HandleReserve = async (e) => {
         e.preventDefault();
         if (!selectedDate) return toast.error("Date cannot be empty.");
-
+        if(!isLoggedIn) return toast.error("Must be logged in!");
+        
         const payload = {
             from: uid,
             message: `Request to reserve seat`,
