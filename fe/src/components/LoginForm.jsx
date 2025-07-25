@@ -103,7 +103,7 @@ export default function LoginForm({ toggle }) {
                         <Link to="#" className={redirectStyles}>Forgot Password?</Link>
                     </div>
                 </div>
-                <button className={ButtonStyles}>Login</button>
+                <button className={ButtonStyles}>{isProcessing ? "Logging in...":"Login"}</button>
 
                 <p>Dont have an account? <button onClick={() => { toggle() }} className={redirectStyles}>Sign up</button></p>
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef  } from "react"
 import { useNavigate } from "react-router"
 import Input from "./Input"
 import axios from "axios"
@@ -126,7 +126,7 @@ const RestaurantForm = ({ title = "", location = "", description = ""}) => {
                     />
                 })}
                 {/* <input type="file" accept="image/*" multiple name="images" id="images" onChange={(e)=>{setImages(e.target.files)}}/> */}
-                <button className={ButtonStyles} disabled={isProcessing}>Submit</button>
+                <button className={ButtonStyles} disabled={isProcessing}>{isProcessing ? "Submitting...":"Submit"}</button>
             </form>
         </>
     )

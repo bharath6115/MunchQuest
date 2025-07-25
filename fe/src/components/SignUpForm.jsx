@@ -1,5 +1,4 @@
-import Input from "./Input"
-import { useState } from "react"
+import { useState, useRef  } from "react"
 import ButtonStyles from "../utils/ButtonStyles"
 import { Link, useNavigate } from "react-router"
 import { createUserWithEmailAndPassword } from "firebase/auth"
@@ -132,7 +131,7 @@ export default function SignUpForm({ toggle }) {
                         {/* <Link to="#" className={redirectStyles}>Forgot Password?</Link> */}
                     </div>
                 </div>
-                <button className={ButtonStyles}>Sign Up</button>
+                <button className={ButtonStyles}>{isProcessing ? "Signing you up...":"Sign Up"}</button>
 
                 <p>Already have an account? <button onClick={() => { toggle() }} className={redirectStyles}>Log in</button></p>
 

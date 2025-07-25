@@ -21,6 +21,7 @@ export default function RestaurantUpdate({ restaurantData, setEditRestaurant, id
     });
     const textareaRef = useRef(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useLayoutEffect(() => {
         if (textareaRef.current) {
@@ -38,6 +39,7 @@ export default function RestaurantUpdate({ restaurantData, setEditRestaurant, id
             reserveSeat: restaurantData.reserveSeat || "",
         });
         setIsProcessing(false);
+        setIsSubmitting(false);
     }, [restaurantData]);
 
     const ValidateData = (e) => {
@@ -77,27 +79,27 @@ export default function RestaurantUpdate({ restaurantData, setEditRestaurant, id
             }
             return;
         }
-
+        setIsSubmitting(true);
         HandleSubmit();
     }
 
     const HandleSubmit = async () => {
         const payload = { ...data };
-        axios.post(`/restaurants/${id}?_method=PATCH`, payload)
-            .then((res) => {
-                setIsProcessing(false);
-                setEditRestaurant(false);
-                fetchRestaurant();
-                toast.success(`Restaurant updated sucessfully!`)
-            })
-            .catch(err => {
-                setIsProcessing(false);
-                const status = err.response?.status;
-
-                toast.error("Something went wrong! Please try again.");
-                console.error("Submit error:", err);
-                if (status === 404) return nav("/error");
-            })
+        try{
+            const res = await axios.post(`/restaurants/${id}?_method=PATCH`, payload);
+            setData(res.data);
+            fetchRestaurant();
+            toast.success(`Restaurant updated sucessfully!`)
+        }catch(err){
+            const status = err.response?.status;
+            toast.error("Something went wrong! Please try again.");
+            console.error("Submit error:", err);
+            if (status === 404) return nav("/error");
+        }finally{
+            setIsProcessing(false);
+            setIsSubmitting(false);
+            setEditRestaurant(false);
+        }
     }
     const UpdData = (e) => {
         const tgt = e.target.name;
@@ -166,7 +168,7 @@ export default function RestaurantUpdate({ restaurantData, setEditRestaurant, id
 
 
                 <div className="justify-end flex flex-row ">
-                    <button className={ButtonStyles}>Submit</button>
+                    <button className={ButtonStyles}>{isSubmitting ? "Submitting....":"Submit"}</button>
                     <button type="button" className={DangerButton} onClick={() => { setEditRestaurant(false) }}>Cancel</button>
                 </div>
             </div>

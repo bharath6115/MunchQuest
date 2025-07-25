@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef  } from "react"
 import { useNavigate, useParams } from "react-router"
 import Input from "./Input"
 import ButtonStyles from "../utils/ButtonStyles"
@@ -20,6 +20,7 @@ export default function CreateReview({ rating, message, target, updateRestaurant
         message: "",
     })
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         setData({ rating, message });
@@ -37,8 +38,8 @@ export default function CreateReview({ rating, message, target, updateRestaurant
 
     const ValidateData = (e) => {
         e.preventDefault();
-        
-        if(isProcessing) return;
+
+        if (isProcessing) return;
         setIsProcessing(true);
 
         const newErrors = {}
@@ -46,19 +47,19 @@ export default function CreateReview({ rating, message, target, updateRestaurant
         if (!data.rating) {
             newErrors.rating = "Rating is required."
         } else {
-            if(Number.isNaN(parseInt(data.rating)) || !Number.isInteger(parseFloat(data.rating))){
+            if (Number.isNaN(parseInt(data.rating)) || !Number.isInteger(parseFloat(data.rating))) {
                 newErrors.rating = "Rating must be an integer."
-            }else if (parseInt(data.rating) < 1) {
+            } else if (parseInt(data.rating) < 1) {
                 newErrors.rating = "Rating cannot be less than 1."
             } else if (parseInt(data.rating) > 5) {
                 newErrors.rating = "Rating cannot be more than 5."
             }
         }
-        
+
         if (!data.message) {
             newErrors.message = "Message is required."
         }
-        
+
         if (Object.keys(newErrors).length) {
             setError(newErrors);
             setIsProcessing(false);
@@ -66,24 +67,27 @@ export default function CreateReview({ rating, message, target, updateRestaurant
         }
         HandleSubmit();
     }
-    
+
     const HandleSubmit = async () => {
-        const payload = {...data};
+        const payload = { ...data };
         payload.rating = parseInt(payload.rating);
         payload["owner"] = uid;
-        axios.post(target, payload)
-            .then(() => {
-                setData({ rating: "", message: "", })
-                setIsProcessing(false);
-                updateReviews();    //refetch the reviews
-                updateRestaurant();
-                toast.success(`Review ${title==="" ? "updated":"posted"} sucessfully!`)
-                if (title) window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }) //scroll to bottom to show new review.
-            }).catch((err) => {
-                console.log(err);
-                nav("/error")
-                toast.error(err);
-            })
+        try {
+            const res = await axios.post(target, payload);
+            setData({ rating: "", message: "", });
+            updateReviews();    //refetch the reviews
+            updateRestaurant();
+            toast.success(`Review ${title === "" ? "updated" : "posted"} sucessfully!`)
+            if (title) window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
+        } catch (err) {
+            const status = err.response?.status;
+            toast.error(status || "Something went wrong! Please try again.");
+            console.error("Submit error:", err);
+            nav("/error");
+        } finally {
+            setIsProcessing(false);
+            setIsSubmitting(false);
+        }
     }
     return (
         <motion.div
@@ -93,15 +97,15 @@ export default function CreateReview({ rating, message, target, updateRestaurant
         >
 
             <form onSubmit={ValidateData} className={formStyles}>
-                {isLoggedIn ? 
-                <>
-                {title && <h1 className="text-3xl">{title}</h1>}
-                <Input fn={updData} name="rating" value={data.rating} error={error.rating} />
-                <Input fn={updData} name="message" value={data.message} error={error.message} />
-                <button className={ButtonStyles} >Submit</button>
-                </>
-                :
-                <h1 className="font-medium text-lg">Please login to leave a review!</h1>
+                {isLoggedIn ?
+                    <>
+                        {title && <h1 className="text-3xl">{title}</h1>}
+                        <Input fn={updData} name="rating" value={data.rating} error={error.rating} />
+                        <Input fn={updData} name="message" value={data.message} error={error.message} />
+                        <button className={ButtonStyles} >{isProcessing ? "Submitting...":"Submit"}</button>
+                    </>
+                    :
+                    <h1 className="font-medium text-lg">Please login to leave a review!</h1>
                 }
             </form>
         </motion.div>

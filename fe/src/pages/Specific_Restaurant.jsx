@@ -1,10 +1,9 @@
 import axios from "axios"
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import ReviewForm from "../components/ReviewForm";
 import ReviewHero from "../components/ReviewHero";
-import { useAuth } from '../services/firebaseMethods';
 import Menu from "../components/Menu";
 import { Loading } from "../components/Loading";
 import RestaurantHero from "../components/RestaurantHero";
@@ -14,7 +13,6 @@ import RestaurantUpdate from "../components/RestaurantUpdate";
 const Specific_Restaurant = () => {
 
     const { id } = useParams();
-    const { isLoggedIn, isAdmin, uid } = useAuth();
     const [restaurantData, setrestaurantData] = useState(null);
     const [editRestaurant, setEditRestaurant] = useState(false);
     const [reviewsData, setReviewsData] = useState([]);
@@ -23,7 +21,6 @@ const Specific_Restaurant = () => {
     const [isLoading,setIsLoading] = useState(true);
     const [isProcessing,setIsProcessing] = useState(false);
     const nav = useNavigate();
-    const location = useLocation();
 
     const fetchReviews = async () => {
         axios.get(`/restaurants/${id}/reviews`)
@@ -60,14 +57,13 @@ const Specific_Restaurant = () => {
     useEffect(() => {
         fetchRestaurant();
         fetchReviews();
-    }, [location])
+    }, [id])
 
     useEffect(()=>{
         setIsLoading(false);
     },[editRestaurant])
 
     const UpdRestaurant = () => {
-        // setIsLoading(true);
         setEditRestaurant(true);
     }
     const VerifyRestaurant = ()=>{
@@ -125,7 +121,7 @@ const Specific_Restaurant = () => {
     const ButtonStyles = "border-2 text-black rounded-lg max-w-100 min-w-30 bg-sky-300 hover:bg-sky-500 px-3 py-1 my-3 transition-colors duration-150"
     const DangerButton = ButtonStyles.replace("bg-sky-300", "bg-red-400").replace("hover:bg-sky-500", "hover:bg-red-500")
 
-    // console.log(restaurantData);
+    // console.log("Before editing:",editReview);
 
     if(isLoading) return <Loading/>
 
