@@ -11,7 +11,7 @@ import { AuthProvider } from './services/firebaseMethods.jsx'
 import { Analytics } from "@vercel/analytics/react"
 import FAQ from './pages/FAQ.jsx'
 import VerifyPanel from "./pages/VerifyPanel.jsx"
-import Profile from './pages/profile.jsx'
+import Profile from "./pages/Profile.jsx"
 
 const router = createBrowserRouter([
 
