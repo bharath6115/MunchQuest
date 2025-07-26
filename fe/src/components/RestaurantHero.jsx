@@ -2,15 +2,18 @@ import { useAuth } from "../services/firebaseMethods"
 import { MdOutlineVerified } from "react-icons/md";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function RestaurantHero({ id, restaurantData, UpdRestaurant, DelRestaurant, VerifyRestaurant }) {
     const { isAdmin, uid, isLoggedIn } = useAuth();
     const [showReservationForm, setShowReservationForm] = useState(false);
     const [selectedDate, setSelectedDate] = useState("");
+    const isReserving = useRef(false);
 
     const HandleReserve = async (e) => {
         e.preventDefault();
+        if (isReserving.current) return;
+        isReserving.current = true;
         if (!selectedDate) return toast.error("Date cannot be empty.");
         if (!isLoggedIn) return toast.error("Must be logged in!");
 
@@ -31,6 +34,8 @@ export default function RestaurantHero({ id, restaurantData, UpdRestaurant, DelR
             const msg = err.response?.data?.message || "Something went wrong";
             console.log(err);
             toast.error(msg);
+        } finally {
+            isReserving.current = false;
         }
     };
 

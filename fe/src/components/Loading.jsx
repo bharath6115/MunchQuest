@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-
+import {Link} from "react-router-dom"
 export const Loading = () => {
     const [delayMessage, setDelayMessage] = useState(false);
 
@@ -15,9 +14,13 @@ export const Loading = () => {
         <div className='flex items-center justify-center gap-2 flex-col'>
             <div className="animate-spin rounded-full h-10 w-10 border-t-3 border-b-3 border-yellow-400"></div>
             <div className='text-2xl'>Loading...</div>
-            {delayMessage && <p className="text-yellow-300 mt-4 text-md italic">
-                Still loading... the server must be experiencing a cold start 🥶
-            </p>}
+            {delayMessage && <>
+                <p className="text-yellow-300 mt-4 text-md italic">
+                    Still loading... the server must be experiencing a cold start 🥶
+                </p>
+                <Link to='/faq#loading' className=" text-yellow-500 hover:underline underline-yellow-300"> Why is this happening?</Link>
+            </>
+            }
         </div>
     )
 }

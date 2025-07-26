@@ -6,22 +6,22 @@ import { useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 
 export const Login_Signup = () => {
-    const {isLoggedIn} = useAuth();
+    const { isLoggedIn } = useAuth();
     const nav = useNavigate();
-    const [Login,setLogin] = useState(true);
+    const [Login, setLogin] = useState(true);
 
-    useEffect(()=>{
-        if(isLoggedIn){nav("/");}
-    },[isLoggedIn])
+    useEffect(() => {
+        if (isLoggedIn) { nav("/"); }
+    }, [isLoggedIn])
 
-    const toggleForm = ()=>{
-        setLogin(old=>!old);
+    const toggleForm = () => {
+        setLogin(old => !old);
     }
 
     return (
         <>
-        {Login && <LoginForm toggle = {toggleForm}/>}
-        {!Login && <SignUpForm toggle = {toggleForm}/>}
+            {Login && <LoginForm toggle={toggleForm} />}
+            {!Login && <SignUpForm toggle={toggleForm} />}
         </>
     )
 }

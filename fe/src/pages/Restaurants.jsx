@@ -45,11 +45,11 @@ const Restaurants = () => {
                 <div className="flex text-md sm:text-2xl mt-3">
                     <button
                         className={`${SliderStyle} rounded-l-lg ${showAll ? "" : "bg-zinc-700"}`}
-                        onClick={ ()=>{fetchData("/restaurants/verified"); setShowAll(false);}}
+                        onClick={() => { fetchData("/restaurants/verified"); setShowAll(false); }}
                     >Verified Restaurants</button>
                     <button
                         className={`${SliderStyle} rounded-r-lg ${showAll ? "bg-zinc-700" : ""}`}
-                        onClick={ ()=>{fetchData("/restaurants");  setShowAll(true);}}
+                        onClick={() => { fetchData("/restaurants"); setShowAll(true); }}
                     >All Restaurants</button>
                 </div>
                 <Link to="/restaurants/new" className="mt-1 text-lg text-sky-300 font-thin hover:text-yellow-400">+ Add New</Link>

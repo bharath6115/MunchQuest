@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef  } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useNavigate, useParams } from "react-router"
 import Input from "./Input"
 import ButtonStyles from "../utils/ButtonStyles"
@@ -19,13 +19,13 @@ export default function CreateReview({ rating, message, target, updateRestaurant
         rating: "",
         message: "",
     })
-    const [isProcessing, setIsProcessing] = useState(false);
+    const isProcessing = useRef(false)
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         setData({ rating, message });
         setError({ rating: "", message: "" });
-        setIsProcessing(false);
+        isProcessing.current = false;
     }, [rating, message])
 
     const updData = (evt) => {
@@ -39,8 +39,8 @@ export default function CreateReview({ rating, message, target, updateRestaurant
     const ValidateData = (e) => {
         e.preventDefault();
 
-        if (isProcessing) return;
-        setIsProcessing(true);
+        if (isProcessing.current) return;
+        isProcessing.current = true;
 
         const newErrors = {}
 
@@ -62,7 +62,7 @@ export default function CreateReview({ rating, message, target, updateRestaurant
 
         if (Object.keys(newErrors).length) {
             setError(newErrors);
-            setIsProcessing(false);
+            isProcessing.current = false;
             return;
         }
         HandleSubmit();
@@ -85,7 +85,7 @@ export default function CreateReview({ rating, message, target, updateRestaurant
             console.error("Submit error:", err);
             nav("/error");
         } finally {
-            setIsProcessing(false);
+            isProcessing.current = false;
             setIsSubmitting(false);
         }
     }
@@ -102,7 +102,7 @@ export default function CreateReview({ rating, message, target, updateRestaurant
                         {title && <h1 className="text-3xl">{title}</h1>}
                         <Input fn={updData} name="rating" value={data.rating} error={error.rating} />
                         <Input fn={updData} name="message" value={data.message} error={error.message} />
-                        <button className={ButtonStyles} >{isProcessing ? "Submitting...":"Submit"}</button>
+                        <button className={ButtonStyles} >{isProcessing.current ? "Submitting..." : "Submit"}</button>
                     </>
                     :
                     <h1 className="font-medium text-lg">Please login to leave a review!</h1>

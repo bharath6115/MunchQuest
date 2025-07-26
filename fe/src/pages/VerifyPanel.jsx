@@ -9,8 +9,8 @@ import toast from "react-hot-toast";
 import { Link } from "react-router";
 
 
-export default function VerifyPanel(){
-    const {isAdmin} = useAuth();
+export default function VerifyPanel() {
+    const { isAdmin } = useAuth();
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const nav = useNavigate();
@@ -33,18 +33,18 @@ export default function VerifyPanel(){
 
         fetchData();
     }, [])
-    
+
     // console.log(data);
     if (isLoading) return <Loading />;
-    if(!isAdmin) return <ErrorPage/>
+    if (!isAdmin) return <ErrorPage />
     return (
         <>
             <div className="w-full flex flex-col flex-grow justify-start items-center">
                 <h1 className="text-3xl my-7">Unverified Restaurants</h1>
-                {!data.length && <p className="text-lg">No data to show!</p> }
-            {data.map((val) => {
-                return <Card img={val.images[0]} key={val["_id"]} id={val._id} title={val.title} description={val.description} location={val.location} />
-            })}
+                {!data.length && <p className="text-lg">No data to show!</p>}
+                {data.map((val) => {
+                    return <Card img={val.images[0]} key={val["_id"]} id={val._id} title={val.title} description={val.description} location={val.location} />
+                })}
             </div>
         </>
     )

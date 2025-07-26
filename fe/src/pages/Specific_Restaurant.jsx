@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import ReviewForm from "../components/ReviewForm";
@@ -18,8 +18,8 @@ const Specific_Restaurant = () => {
     const [reviewsData, setReviewsData] = useState([]);
     const [editReview, setEditReview] = useState({});
     const [newReview, setNewReview] = useState(false);
-    const [isLoading,setIsLoading] = useState(true);
-    const [isProcessing,setIsProcessing] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const isProcessing = useRef(false);
     const nav = useNavigate();
 
     const fetchReviews = async () => {
@@ -28,7 +28,7 @@ const Specific_Restaurant = () => {
                 setReviewsData(res.data);
                 setNewReview(false);
                 setIsLoading(false);
-                setIsProcessing(false);
+                isProcessing.current = false;
                 setEditReview(old => {
                     const obj = { ...old }
                     res.data.forEach((review) => { obj[review._id] = false })   //Reset the edit status for each everytime we fetch reviews
@@ -59,21 +59,21 @@ const Specific_Restaurant = () => {
         fetchReviews();
     }, [id])
 
-    useEffect(()=>{
+    useEffect(() => {
         setIsLoading(false);
-    },[editRestaurant])
+    }, [editRestaurant])
 
     const UpdRestaurant = () => {
         setEditRestaurant(true);
     }
-    const VerifyRestaurant = ()=>{
+    const VerifyRestaurant = () => {
 
-        if(isProcessing) return;
-        setIsProcessing(true);
+        if (isProcessing.current) return;
+        isProcessing.current = true;
 
-        axios.post(`/restaurants/${id}?_method=PATCH`, {isVerified:true})
+        axios.post(`/restaurants/${id}?_method=PATCH`, { isVerified: true })
             .then((res) => {
-                setIsProcessing(false);
+                isProcessing.current = false;
                 fetchRestaurant();
                 console.log(res);
             })
@@ -81,14 +81,14 @@ const Specific_Restaurant = () => {
     }
 
     const DelRestaurant = async () => {
-        
-        if(isProcessing) return;
-        setIsProcessing(true);
-        
+
+        if (isProcessing.current) return;
+        isProcessing.current = true;
+
         axios.post(`/restaurants/${id}?_method=DELETE`, {})
             .then((res) => {
                 console.log("delted")
-                setIsProcessing(false);
+                isProcessing.current = false;
                 nav("/restaurants")
                 toast.success("Restaurant has been deleted.")
             })
@@ -99,16 +99,16 @@ const Specific_Restaurant = () => {
         fetchRestaurant();
     }
     const DelReview = (review_id) => {
-        
-        if(isProcessing) return;
-        setIsProcessing(true);
+
+        if (isProcessing.current) return;
+        isProcessing.current = true;
 
         axios.post(`/restaurants/${id}/reviews/${review_id}?_method=DELETE`)
             .then(() => {
                 console.log("Review Deleted!")
                 fetchReviews();
                 fetchRestaurant();
-                setIsProcessing(false);
+                isProcessing.current = false;
                 toast.success("Review has been deleted.")
             })
             .catch((err) => {
@@ -123,17 +123,17 @@ const Specific_Restaurant = () => {
 
     // console.log("Before editing:",editReview);
 
-    if(isLoading) return <Loading/>
+    if (isLoading) return <Loading />
 
     if (restaurantData) return (
         <>
             <div className="max-w-[1280px] w-5/6 text-white px-6 py-10 space-y-4">
 
                 {
-                    editRestaurant ? 
-                    <RestaurantUpdate restaurantData={restaurantData} setEditRestaurant={setEditRestaurant} id={id} fetchRestaurant={fetchRestaurant}/>
-                    :
-                    <RestaurantHero restaurantData={restaurantData} UpdRestaurant={UpdRestaurant} DelRestaurant={DelRestaurant} VerifyRestaurant={VerifyRestaurant} id={id}/>
+                    editRestaurant ?
+                        <RestaurantUpdate restaurantData={restaurantData} setEditRestaurant={setEditRestaurant} id={id} fetchRestaurant={fetchRestaurant} />
+                        :
+                        <RestaurantHero restaurantData={restaurantData} UpdRestaurant={UpdRestaurant} DelRestaurant={DelRestaurant} VerifyRestaurant={VerifyRestaurant} id={id} />
                 }
 
                 <Menu owner={restaurantData.owner} id={id} />

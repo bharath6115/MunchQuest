@@ -42,6 +42,7 @@ export default function Navbar() {
     const [searchOpen, setSearchOpen] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [unreadNotif, setUnreadNotif] = useState(true);
     const [data, setData] = useState({});
 
     const fetchData = async () => {
@@ -50,6 +51,7 @@ export default function Navbar() {
                 setData(res.data);
                 setShowProfile(false);
                 setShowNotifications(false);
+                setUnreadNotif(res.data.unreadNotificationsCount != 0 ? true : false);
             })
             .catch((err) => {
                 console.log(err);
@@ -63,11 +65,11 @@ export default function Navbar() {
         document.body.style.overflow = (menuOpen || searchOpen) ? "hidden" : "auto";
     }, [menuOpen, searchOpen]);
 
-    // { console.log(data) };
 
     return (
         <nav className="relative z-50 bg-zinc-900 text-white border-b border-zinc-800 px-2 py-1 md:px-7 flex items-center justify-between shadow-md" >
-            {/* mobile nav */}
+
+            {/* Mobile NavLinks */}
             <div className="block md:hidden flex flex-grow items-center justify-start pl-3 text-4xl">
                 <IoMenuOutline className={`${menuOpen && "text-yellow-300"}`} onClick={() => { setMenuOpen(old => !old) }} />
                 {menuOpen &&
@@ -80,17 +82,20 @@ export default function Navbar() {
                     </>
                 }
             </div>
+
             {/* Logo */}
             <div className="flex flex-grow items-center justify-center md:justify-start">
                 <img className="h-[50px] w-[49px]" src={logo} alt="Website logo" />
                 <NavLink to="/" className="text-white font-bold text-[20px]"> MunchQuest </NavLink>
             </div>
-            {/* nav */}
+
+            {/* NavLinks */}
             <div className=" hidden md:flex gap-4 items-center justify-between px-4">
                 <NavLinks />
             </div>
-            {/* search bar + login */}
+
             <div className="flex flex-grow items-center gap-4 justify-end">
+                {/* Search Bar */}
                 <div>
                     <button
                         className={"border-2 border-zinc-900 text-white rounded-lg bg-zinc-800 hover:bg-zinc-700 px-3 py-1 transition-colors duration-150 flex items-center justify-center gap-1"}
@@ -102,16 +107,17 @@ export default function Navbar() {
                     {searchOpen && <SearchBox setSearchOpen={setSearchOpen} />}
 
                 </div>
+                {/* Login */}
                 {
                     isLoggedIn ?
                         <div className="gap-4 flex items-center justify-center">
 
-                            <button aria-label="Notifications" className={`text-2xl ${showNotifications && "text-yellow-300"}`} onClick={() => { setShowProfile(false); setShowNotifications(old => !old) }}> <FaRegBell /> </button>
-                            {/* {data.unreadNotificationsCount !== 0 && <div className="absolute top-4 right-17 w-[9px] h-[9px] bg-white rounded-full"></div>} */}
-                            {showNotifications && <NotificationsCard />}
+                            <button aria-label="Notifications" className={`text-2xl ${showNotifications && "text-yellow-300"}`} onClick={() => { setShowNotifications(old => !old) }}> <FaRegBell /> </button>
+                            {unreadNotif && <div className="absolute top-4 right-17 w-[9px] h-[9px] bg-yellow-400 rounded-full"></div>}
+                            {showNotifications && <NotificationsCard setShowNotifications={setShowNotifications}/>}
 
-                            <button aria-label="User Details" className={`text-2xl ${showProfile && "text-yellow-300"}`} onClick={() => { setShowNotifications(false); setShowProfile(old => !old) }}> <CgProfile /> </button>
-                            {showProfile && <ProfileCard data={data} />}
+                            <button aria-label="User Details" className={`text-2xl ${showProfile && "text-yellow-300"}`} onClick={() => { setShowProfile(old => !old) }}> <CgProfile /> </button>
+                            {showProfile && <ProfileCard data={data} setShowProfile={setShowProfile} />}
 
                         </div>
                         :

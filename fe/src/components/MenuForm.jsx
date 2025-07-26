@@ -1,22 +1,22 @@
-import { useEffect, useState, useRef  } from "react"
+import { useEffect, useState, useRef } from "react"
 import axios from "axios";
 
 
-export const MenuForm = ({val,target,refresh}) => {
-    const [Name,setName] = useState("");
-    const [error,setError] = useState("");
-    const [isProcessing, setIsProcessing] = useState(false);
+export const MenuForm = ({ val, target, refresh }) => {
+    const [Name, setName] = useState("");
+    const [error, setError] = useState("");
+    const isProcessing = useRef(false)
 
-    useEffect(()=>{
+    useEffect(() => {
         setName(val);
         setError("");
-        setIsProcessing(false);
-    },[val]);
+        isProcessing.current = false;
+    }, [val]);
 
-    const ValidateData = (e)=>{
+    const ValidateData = (e) => {
         e.preventDefault();
 
-        if(!Name){
+        if (!Name) {
             setError("Item name is required.")
             return;
         }
@@ -24,30 +24,30 @@ export const MenuForm = ({val,target,refresh}) => {
         HandleSubmit();
     }
 
-    const HandleSubmit = async()=>{
-        
-        if(isProcessing) return;
-        setIsProcessing(true);
+    const HandleSubmit = async () => {
 
-        axios.post(target,{item:Name})
-        .then((res)=>{
-            console.log(res);
-            setName("");
-            setIsProcessing(false);
-            refresh();
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
+        if (isProcessing.current) return;
+        isProcessing.current = true;
+
+        axios.post(target, { item: Name })
+            .then((res) => {
+                console.log(res);
+                setName("");
+                isProcessing.current = false;
+                refresh();
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
 
-    const UpdName = (e)=>{
+    const UpdName = (e) => {
         setName(e.target.value)
     }
 
-     const  BaseStyles = "w-50 px-2 py-2 rounded-xl border border-zinc-600 bg-zinc-800 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition flex-grow"
-    
-    const BorderStyles = (error.length===0 ? "" : " outline-2 outline-red-500");
+    const BaseStyles = "w-50 px-2 py-2 rounded-xl border border-zinc-600 bg-zinc-800 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition flex-grow"
+
+    const BorderStyles = (error.length === 0 ? "" : " outline-2 outline-red-500");
 
     const InpStyles = BaseStyles + BorderStyles
 

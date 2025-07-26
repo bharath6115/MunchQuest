@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef  } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router"
 import Input from "./Input"
 import axios from "axios"
@@ -14,7 +14,7 @@ const rand = (x) => {
     return x[Math.floor(Math.random() * x.length)];
 }
 
-const RestaurantForm = ({ title = "", location = "", description = ""}) => {
+const RestaurantForm = ({ title = "", location = "", description = "" }) => {
     const { uid, isLoggedIn } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
     const nav = useNavigate();
@@ -30,7 +30,7 @@ const RestaurantForm = ({ title = "", location = "", description = ""}) => {
         location: "",
         description: "",
     });
-    const [isProcessing, setIsProcessing] = useState(false);
+    const isProcessing = useRef(false)
 
     // const [images,setImages] = useState(null);
 
@@ -38,7 +38,7 @@ const RestaurantForm = ({ title = "", location = "", description = ""}) => {
     useEffect(() => {
         setData({ title, location, description })
         setError({ title: "", location: "", description: "" })
-        setIsProcessing(false);
+        isProcessing.current = false;
         setIsLoading(false);
         // setImages(null);
     }, [title, location, description])
@@ -56,8 +56,8 @@ const RestaurantForm = ({ title = "", location = "", description = ""}) => {
     const ValidateData = (e) => {
         e.preventDefault();
 
-        if (isProcessing) return;
-        setIsProcessing(true);
+        if (isProcessing.current) return;
+        isProcessing.current = true;
 
         const newErrors = {}
 
@@ -79,7 +79,7 @@ const RestaurantForm = ({ title = "", location = "", description = ""}) => {
 
         if (Object.keys(newErrors).length) {
             setError(newErrors);
-            setIsProcessing(false);
+            isProcessing.current = false;
             return;
         }
 
@@ -95,12 +95,12 @@ const RestaurantForm = ({ title = "", location = "", description = ""}) => {
         payload["isVerified"] = false;
         axios.post("/restaurants", payload)
             .then((res) => {
-                setIsProcessing(false);
+                isProcessing.current = false;
                 navigate(`/restaurants/${res.data._id}`)
                 toast.success(`Restaurant added sucessfully!`)
             })
             .catch(err => {
-                setIsProcessing(false);
+                isProcessing.current = false;
                 const status = err.response?.status;
 
                 toast.error("Something went wrong! Please try again.");
@@ -114,7 +114,7 @@ const RestaurantForm = ({ title = "", location = "", description = ""}) => {
     return (
         <>
             <form onSubmit={ValidateData} className={formStyles} /*encType="multipart/form-data"*/>
-                <button type="button" onClick={()=>{nav("/restaurants")}} className="p-0 m-0 self-end text-md hover:text-red-500" disabled={isProcessing}>Cancel</button>
+                <button type="button" onClick={() => { nav("/restaurants") }} className="p-0 m-0 self-end text-md hover:text-red-500" disabled={isProcessing.current}>Cancel</button>
                 <h1 className="text-3xl">Add new restaurant</h1>
                 {Object.entries(data).map(([key, value]) => {
                     return <Input
@@ -126,7 +126,7 @@ const RestaurantForm = ({ title = "", location = "", description = ""}) => {
                     />
                 })}
                 {/* <input type="file" accept="image/*" multiple name="images" id="images" onChange={(e)=>{setImages(e.target.files)}}/> */}
-                <button className={ButtonStyles} disabled={isProcessing}>{isProcessing ? "Submitting...":"Submit"}</button>
+                <button className={ButtonStyles} disabled={isProcessing.current}>{isProcessing.current ? "Submitting..." : "Submit"}</button>
             </form>
         </>
     )

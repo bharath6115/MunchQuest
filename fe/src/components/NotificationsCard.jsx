@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef  } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../services/firebaseMethods";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -7,15 +7,26 @@ import { Link } from "react-router";
 //instead of refetching data always, update the data present after sending axios request. update the readMore according to size
 
 //to batch fetch: https://chatgpt.com/s/t_6880e450510c8191bde6e2e8787a6731
-export default function NotificationsCard() {
+export default function NotificationsCard({setShowNotifications}) {
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [isProcessing, setIsProcessing] = useState(false);
+    const isProcessing = useRef(false)
     const { uid } = useAuth();
     const [readMore, setReadMore] = useState([])
     const [restaurantsMap, setRestaurantsMap] = useState({});
     const [usersMap, setUsersMap] = useState({});
+    const wrapperRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+                setShowNotifications(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     const fetchNotifications = async () => {
         setIsLoading(true);
@@ -24,7 +35,7 @@ export default function NotificationsCard() {
             setData(res.data);
             setReadMore(Array(res.data.length).fill(false));
 
-            if(res.data.length===0) return;
+            if (res.data.length === 0) return;
 
             //Batch fetch the required details in a single request
             const ids = [...new Set(res.data.map(n => n.restaurantID))];
@@ -56,8 +67,8 @@ export default function NotificationsCard() {
     }
 
     const UpdNotif = async (id) => {
-        if (isProcessing) return;
-        setIsProcessing(true);
+        if (isProcessing.current) return;
+        isProcessing.current = true;
         const payload = { isRead: true }
 
         try {
@@ -73,13 +84,13 @@ export default function NotificationsCard() {
             console.log(err);
             toast.error(err)
         } finally {
-            setIsProcessing(false);
+            isProcessing.current = false;
         }
     }
 
     const DeleteNotif = async (id) => {
-        if (isProcessing) return;
-        setIsProcessing(true);
+        if (isProcessing.current) return;
+        isProcessing.current = true;
         try {
             await axios.post(`/users/${uid}/notifications/${id}?_method=DELETE`)
             // fetchNotifications();
@@ -101,7 +112,7 @@ export default function NotificationsCard() {
             console.log(err);
             toast.error(err)
         } finally {
-            setIsProcessing(false);
+            isProcessing.current = false;
         }
     }
 
@@ -111,7 +122,7 @@ export default function NotificationsCard() {
     // console.log(usersMap);
 
     return (
-        <div className="absolute top-12 right-12 md:right-15 min-w-80 bg-zinc-750 rounded-lg px-1 ">
+        <div ref={wrapperRef} className="absolute top-12 right-12 md:right-15 min-w-80 bg-zinc-750 rounded-lg px-1 ">
 
             {isLoading ?
                 <div className="flex flex-col items-center justify-center px-3 py-3 gap-2">

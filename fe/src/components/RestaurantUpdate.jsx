@@ -20,7 +20,7 @@ export default function RestaurantUpdate({ restaurantData, setEditRestaurant, id
         reserveSeat: "",
     });
     const textareaRef = useRef(null);
-    const [isProcessing, setIsProcessing] = useState(false);
+    const isProcessing = useRef(false)
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useLayoutEffect(() => {
@@ -38,15 +38,15 @@ export default function RestaurantUpdate({ restaurantData, setEditRestaurant, id
             description: restaurantData.description || "",
             reserveSeat: restaurantData.reserveSeat || "",
         });
-        setIsProcessing(false);
+        isProcessing.current = false;
         setIsSubmitting(false);
     }, [restaurantData]);
 
     const ValidateData = (e) => {
         e.preventDefault();
 
-        if (isProcessing) return;
-        setIsProcessing(true);
+        if (isProcessing.current) return;
+        isProcessing.current = true;
 
         const newErrors = {}
 
@@ -65,15 +65,15 @@ export default function RestaurantUpdate({ restaurantData, setEditRestaurant, id
         } else if (data.description.length < 5) {
             newErrors.description = "Description must be longer than 5 characters";
         }
-        if(!data.reserveSeat){
+        if (!data.reserveSeat) {
             newErrors.reserveSeat = "Reserve seat message is required.";
-        }else if(data.reserveSeat.length > 25){
+        } else if (data.reserveSeat.length > 25) {
             newErrors.reserveSeat = "Reserve seat message is too long!";
         }
 
         if (Object.keys(newErrors).length) {
             setError(newErrors);
-            setIsProcessing(false);
+            isProcessing.current = false;
             for (let e in newErrors) {
                 toast.error(newErrors[e]);
             }
@@ -85,18 +85,18 @@ export default function RestaurantUpdate({ restaurantData, setEditRestaurant, id
 
     const HandleSubmit = async () => {
         const payload = { ...data };
-        try{
+        try {
             const res = await axios.post(`/restaurants/${id}?_method=PATCH`, payload);
             setData(res.data);
             fetchRestaurant();
             toast.success(`Restaurant updated sucessfully!`)
-        }catch(err){
+        } catch (err) {
             const status = err.response?.status;
             toast.error("Something went wrong! Please try again.");
             console.error("Submit error:", err);
             if (status === 404) return nav("/error");
-        }finally{
-            setIsProcessing(false);
+        } finally {
+            isProcessing.current = false;
             setIsSubmitting(false);
             setEditRestaurant(false);
         }
@@ -156,19 +156,19 @@ export default function RestaurantUpdate({ restaurantData, setEditRestaurant, id
                     onChange={UpdData}
                     ref={textareaRef}
                 />
-                
+
                 <input
                     name="reserveSeat"
                     className={`rounded-sm border-2 border-black text-black bg-sky-400 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition w-60 ${getInputClass("reserveSeat")} self-start`}
                     value={data.reserveSeat}
                     onChange={UpdData}
                 />
-{/* 
+                {/* 
                 <input className="border-2 text-black rounded-lg bg-sky-400 hover:bg-yellow-300 px-3 py-1 w-35" value={data.reserveSeat} > Reserve a seat </input> */}
 
 
                 <div className="justify-end flex flex-row ">
-                    <button className={ButtonStyles}>{isSubmitting ? "Submitting....":"Submit"}</button>
+                    <button className={ButtonStyles}>{isSubmitting ? "Submitting...." : "Submit"}</button>
                     <button type="button" className={DangerButton} onClick={() => { setEditRestaurant(false) }}>Cancel</button>
                 </div>
             </div>

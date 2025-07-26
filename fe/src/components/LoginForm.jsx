@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import ButtonStyles from "../utils/ButtonStyles"
 import { Link, useNavigate } from "react-router"
 import { auth } from "../firebase"
@@ -17,7 +17,7 @@ export default function LoginForm({ toggle }) {
     })
     const [error, setError] = useState({ Username: "", Password: "" });
     const [showPass, setShowPass] = useState(false);
-    const [isProcessing, setIsProcessing] = useState(false);
+    const isProcessing = useRef(false)
     const nav = useNavigate();
 
     const TogglePassword = () => {
@@ -35,9 +35,9 @@ export default function LoginForm({ toggle }) {
 
     const ValidateData = (e) => {
         e.preventDefault();
-        
-        if(isProcessing) return;
-        setIsProcessing(true);
+
+        if (isProcessing.current) return;
+        isProcessing.current = true;
 
         const newErrors = {}
 
@@ -50,7 +50,7 @@ export default function LoginForm({ toggle }) {
 
         if (Object.keys(newErrors).length) {
             setError(newErrors);
-            setIsProcessing(false);
+            isProcessing.current = false;
             return;
         }
 
@@ -68,14 +68,14 @@ export default function LoginForm({ toggle }) {
             console.error(err);
             toast.error("Invalid credentials");
             setError({ "Auth": "Incorrect Username/Password!" });
-        }finally{
-            setIsProcessing(false);
+        } finally {
+            isProcessing.current = false;
         }
     }
 
 
-    const UsernameStyles = BaseStyles + (error.Username===undefined ? "": (error.Username.length===0 ? "" : " outline-2 outline-red-500"));
-    const PasswordStyles = BaseStyles + (error.Password===undefined ? "": (error.Password.length===0 ? "" : " outline-2 outline-red-500"));
+    const UsernameStyles = BaseStyles + (error.Username === undefined ? "" : (error.Username.length === 0 ? "" : " outline-2 outline-red-500"));
+    const PasswordStyles = BaseStyles + (error.Password === undefined ? "" : (error.Password.length === 0 ? "" : " outline-2 outline-red-500"));
     const errorStyles = "text-sm text-red-400"
 
 
@@ -103,7 +103,7 @@ export default function LoginForm({ toggle }) {
                         <Link to="#" className={redirectStyles}>Forgot Password?</Link>
                     </div>
                 </div>
-                <button className={ButtonStyles}>{isProcessing ? "Logging in...":"Login"}</button>
+                <button className={ButtonStyles}>{isProcessing.current ? "Logging in..." : "Login"}</button>
 
                 <p>Dont have an account? <button onClick={() => { toggle() }} className={redirectStyles}>Sign up</button></p>
 

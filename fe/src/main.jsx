@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import axios from 'axios'
+// import "./services/progressBar.js"
 import { Toaster } from 'react-hot-toast';
 axios.defaults.baseURL = `${import.meta.env.VITE_BACKEND_BASEURL}`
 
@@ -10,6 +11,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Toaster
       position='top-right'
+      containerStyle={{ marginTop: '1rem' }}
       toastOptions={{
         //Default options
         duration: 2000,

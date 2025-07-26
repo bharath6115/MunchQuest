@@ -1,4 +1,4 @@
-import { useState, useRef  } from "react"
+import { useState, useRef } from "react"
 import ButtonStyles from "../utils/ButtonStyles"
 import { Link, useNavigate } from "react-router"
 import { createUserWithEmailAndPassword } from "firebase/auth"
@@ -18,7 +18,7 @@ export default function SignUpForm({ toggle }) {
         Password: ""
     })
     const [showPass, setShowPass] = useState(false);
-    const [isProcessing, setIsProcessing] = useState(false);
+    const isProcessing = useRef(false)
     const [error, setError] = useState({
         Name: "",
         Email: "",
@@ -43,8 +43,8 @@ export default function SignUpForm({ toggle }) {
     const ValidateData = (e) => {
         e.preventDefault();
 
-        if (isProcessing) return;
-        setIsProcessing(true);
+        if (isProcessing.current) return;
+        isProcessing.current = true;
 
         const newErrors = {}
 
@@ -66,7 +66,7 @@ export default function SignUpForm({ toggle }) {
 
         if (Object.keys(newErrors).length) {
             setError(newErrors);
-            setIsProcessing(false);
+            isProcessing.current = false;
             return;
         }
 
@@ -90,7 +90,7 @@ export default function SignUpForm({ toggle }) {
             console.error("Signup error:", err.message);
             toast.error(err.message);
         } finally {
-            setIsProcessing(false);
+            isProcessing.current = false;
         }
     };
 
@@ -131,7 +131,7 @@ export default function SignUpForm({ toggle }) {
                         {/* <Link to="#" className={redirectStyles}>Forgot Password?</Link> */}
                     </div>
                 </div>
-                <button className={ButtonStyles}>{isProcessing ? "Signing you up...":"Sign Up"}</button>
+                <button className={ButtonStyles}>{isProcessing.current ? "Signing you up..." : "Sign Up"}</button>
 
                 <p>Already have an account? <button onClick={() => { toggle() }} className={redirectStyles}>Log in</button></p>
 

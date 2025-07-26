@@ -33,35 +33,37 @@ export default function SearchBox({ setSearchOpen }) {
 
     //debounce -> wait till user gives a break from typing to prevent overwhileming server: works well for fast internet, tackle race conditions while loading data.
     useEffect(() => {
-
-        if (!query.length) {
+        if (!query.trim()) {
             setData([]);
             setIsLoading(false);
             return;
         }
-        setIsLoading(true);
 
-        const source = axios.CancelToken.source();
-        const id = setTimeout(() => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+            setIsLoading(true);
 
-            axios.get(`/restaurants/queries?query=${query}`, { cancelToken: source.token })
+            axios.get(`/restaurants/queries?query=${query}`, { signal: controller.signal })
                 .then((res) => {
                     setData(res.data);
                     setIsLoading(false);
                 })
                 .catch((err) => {
-                    if (axios.isCancel(err)) {
-                        // Request canceled, ignore
-                        console.log('Request canceled', err.message);
+                    if (err.code === "ERR_CANCELED") {
+                        console.log("Request canceled:", err.message);
                     } else {
-                        toast.error(err.response?.request?.response || "Error");
+                        toast.error(err.response?.data?.message || "Error");
+                        setIsLoading(false);
                     }
                 });
-        }, 250)
+        }, 250);
 
-        return (() => { clearTimeout(id); source.cancel();})
+        return () => {
+            clearTimeout(timeoutId);
+            controller.abort("New query triggered");
+        };
+    }, [query]);
 
-    }, [query])
 
 
     return (
@@ -78,7 +80,7 @@ export default function SearchBox({ setSearchOpen }) {
                 </form>
 
                 {/* rendered data */}
-                <div className="flex flex-col h-86 items-center justify-start text-left px-3 overflow-auto">
+                <div className="flex flex-col h-86 items-center justify-start text-left px-3 overflow-auto scrollbar-thick">
                     {data.map((val) => {
                         return (
                             <Link to={`/restaurants/${val._id}`} key={val._id} className="text-lg bg-zinc-700 hover:bg-zinc-800 w-full rounded-lg mt-2 py-1 px-1" onClick={() => { setSearchOpen(false) }}>
@@ -86,7 +88,7 @@ export default function SearchBox({ setSearchOpen }) {
                             </Link>
                         )
                     })}
-                    {data.length === 0 && <h1 className="font-thin text-2xl my-auto">No data available!</h1> }
+                    {data.length === 0 && <h1 className="font-thin text-2xl my-auto">No data available!</h1>}
                 </div>
             </div>
         </div>

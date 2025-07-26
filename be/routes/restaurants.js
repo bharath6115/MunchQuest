@@ -18,6 +18,7 @@ router.get("/", async (req, res) => {
     const data = await Restaurant.find();
     res.send(data);
 })
+
 router.get("/verified", async (req, res) => {
     const data = await Restaurant.find({ isVerified: true });
     res.send(data);
@@ -26,6 +27,7 @@ router.get("/notVerified", async (req, res) => {
     const data = await Restaurant.find({ isVerified: false });
     res.send(data);
 })
+
 router.get("/queries", async (req, res) => {
     const { query } = req.query;
     if (!query) return res.status(400).json({ error: "Query string required" });
