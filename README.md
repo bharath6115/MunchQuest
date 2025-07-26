@@ -12,10 +12,12 @@
 * 📝 Leave reviews with star ratings
 * 🧑‍💻 Admin and owner controls for adding, editing, or deleting restaurants
 * 🧾 Menu editing support for restaurant owners and admins, enabling a fully customizable and dynamic menu experience per restaurant. 
-* 🔐 Authentication via Firebase
-* 🧠 Real-time UI feedback with loading spinners and toast notifications
+* 📬 Notifications for owners on new reservations
+* 🪪 Dedicated profile pages with user-specific info
+* 📅 Table reservation system allowing users to reserve seats directly from the restaurant page
 * 📱 Responsive UI optimized for mobile and desktop
-
+* 🧠 Real-time UI feedback with loading spinners and toast notifications
+* 🔐 Authentication via Firebase
 
 ---
 
@@ -60,7 +62,8 @@
 
 ## 🌱 **Future Enhancements**
 
-* 🔍 Search and filter options for restaurants
+* 🔍 Option to filter restaurants
+* 🖼️ Cloudinary integration for seamless image uploading and optimization
 * 📊 More robust admin dashboard
 * ⏳ Pagination and infinite scroll for reviews
 * 🎨 UI polish and accessibility improvements
