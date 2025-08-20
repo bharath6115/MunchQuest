@@ -1,8 +1,9 @@
-import { Link } from "react-router"
 import { useAuth } from "../services/firebaseMethods.jsx";
+import { useState } from "react";
 
 export default function ReviewHero({ UpdReview, DelReview, rating, message, id, RestaurantOwner, ReviewOwner }) {
     const { isLoggedIn, isAdmin, uid } = useAuth();
+    const [shouldDisable,setShouldDisable] = useState(false);
     return (
         <>
             <div className="flex justify-between items-center mb-2">
@@ -16,8 +17,8 @@ export default function ReviewHero({ UpdReview, DelReview, rating, message, id, 
                 <div className="space-x-2 flex flex-row items-end">
                     {(isAdmin || uid == ReviewOwner) &&
                         <>
-                            <Link onClick={() => { UpdReview(id) }} className="text-sky-300 hover:text-sky-500 font-thin font-thin">Update</Link>
-                            <Link onClick={() => { DelReview(id) }} className="text-red-400 hover:text-red-600 font-thin font-thin">Delete</Link>
+                            <button onClick={() => { UpdReview(id) }} className="text-sky-300 hover:text-sky-500 font-thin font-thin" disabled={shouldDisable}>Update</button>
+                            <button onClick={() => { setShouldDisable(true); DelReview(id) }} className="text-red-400 hover:text-red-600 font-thin font-thin" disabled={shouldDisable}>Delete</button>
                         </>
                     }
                 </div>

@@ -22,7 +22,6 @@ router.post("/", async (req, res) => {
     if (error) return res.status(404).send("Invalid notification data")
 
     data.notifications.push(value);
-    data.unreadNotificationsCount+=1;
     await data.save();
     
     res.send(data.notifications);
@@ -37,7 +36,6 @@ router.patch("/:id", async (req, res) => {
     if(notif.isRead) return res.send(data.nortifications);
     
     notif.isRead = true;
-    data.unreadNotificationsCount-=1;
     await data.save();
     
     res.send(data.notifications);
@@ -48,7 +46,6 @@ router.delete("/:id", async (req, res) => {
     
     const notif = data.notifications.id(req.params.id);                     //subdoc id searcher.
     if (!notif) return res.status(404).send("Notification not found");
-    if(!notif.isRead) data.unreadNotificationsCount-=1;
 
     data.notifications = data.notifications.filter((n) => n._id.toString() !== req.params.id);
     await data.save();

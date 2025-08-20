@@ -2,7 +2,7 @@ import { NavLink } from "react-router"
 import { useAuth } from "../services/firebaseMethods";
 import logo from "../../public/logo.png"
 import { IoMenuOutline, IoSearch } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SearchBox from "./SearchBox";
 import ProfileCard from "./ProfileCard"
 import NotificationsCard from "./NotificationsCard"
@@ -44,6 +44,8 @@ export default function Navbar() {
     const [showNotifications, setShowNotifications] = useState(false);
     const [unreadNotif, setUnreadNotif] = useState(true);
     const [data, setData] = useState({});
+    const bellRef = useRef(null);
+    const profileRef = useRef(null);
 
     const fetchData = async () => {
         axios.get(`/users/${uid}`)
@@ -51,7 +53,7 @@ export default function Navbar() {
                 setData(res.data);
                 setShowProfile(false);
                 setShowNotifications(false);
-                setUnreadNotif(res.data.unreadNotificationsCount != 0 ? true : false);
+                // setUnreadNotif(res.data.unreadNotificationsCount != 0 ? true : false);
             })
             .catch((err) => {
                 console.log(err);
@@ -108,16 +110,17 @@ export default function Navbar() {
 
                 </div>
                 {/* Login */}
+                {/* for socket: https://chatgpt.com/s/t_68a4a7d000d48191a14314093ead4e27 */}
                 {
                     isLoggedIn ?
                         <div className="gap-4 flex items-center justify-center">
 
-                            <button aria-label="Notifications" className={`text-2xl ${showNotifications && "text-yellow-300"}`} onClick={() => { setShowNotifications(old => !old) }}> <FaRegBell /> </button>
+                            <button ref={bellRef} aria-label="Notifications" className={`text-2xl ${showNotifications && "text-yellow-300"}`} onClick={() => { setShowNotifications(old => !old) }}> <FaRegBell /> </button>
                             {unreadNotif && <div className="absolute top-4 right-17 w-[9px] h-[9px] bg-yellow-400 rounded-full"></div>}
-                            {showNotifications && <NotificationsCard setShowNotifications={setShowNotifications}/>}
+                            {showNotifications && <NotificationsCard bellRef={bellRef} setShowNotifications={setShowNotifications} />}
 
-                            <button aria-label="User Details" className={`text-2xl ${showProfile && "text-yellow-300"}`} onClick={() => { setShowProfile(old => !old) }}> <CgProfile /> </button>
-                            {showProfile && <ProfileCard data={data} setShowProfile={setShowProfile} />}
+                            <button ref={profileRef} aria-label="User Details" className={`text-2xl ${showProfile && "text-yellow-300"}`} onClick={() => { setShowProfile(old => !old) }}> <CgProfile /> </button>
+                            {showProfile && <ProfileCard data={data} profileRef={profileRef} setShowProfile={setShowProfile} />}
 
                         </div>
                         :

@@ -71,7 +71,7 @@ export default function SearchBox({ setSearchOpen }) {
             className="absolute top-0 left-0 h-screen w-screen flex items-center justify-center bg-blur z-100 backdrop-blur-xs"
             onClick={() => setSearchOpen(false)}
         >
-            <div className="w-9/10 sm:w-1/2 h-11/20 bg-zinc-750 rounded-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="border-1 border-zinc-200/20 w-9/10 sm:w-1/2 h-11/20 bg-zinc-750 rounded-xl" onClick={(e) => e.stopPropagation()}>
 
                 {/* searchbar */}
                 <form onSubmit={(e) => { e.preventDefault() }} className="flex items-center justify-center gap-2 px-3 py-1 border-b-2 border-zinc-600">

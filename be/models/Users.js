@@ -14,10 +14,6 @@ const userSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
-    unreadNotificationsCount:{
-        type:Number,
-        default: 0,
-    },
     notifications:[
         {
             from:{
@@ -29,21 +25,29 @@ const userSchema = new mongoose.Schema({
                 required:true,
                 default:"Request to reserve seat"
             },
-            reservationDate:{
-                type:String,
-                required:true,
-            },
-            restaurantID:{
-                type: mongoose.Schema.Types.ObjectId,
-                ref:"Restaurant",
-                required:true,
+            notificationDate:{
+                type:Date,
+                default: Date.now,
             },
             isRead:{
                 type:Boolean,
                 default: false,
             },
         }
-    ]
+    ],
+    // reservations: [
+    //     {
+    //         at:{
+    //             type: mongoose.Schema.Types.ObjectId,
+    //             ref: Restaurant,
+    //             required:true,
+    //         },
+    //         reservationDate:{
+    //             type:String,
+    //             required:true,
+    //         },
+    //     }
+    // ]
 })
 
 const User = mongoose.model("User",userSchema);

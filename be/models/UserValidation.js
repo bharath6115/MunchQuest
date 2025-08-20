@@ -5,6 +5,7 @@ const userValidation = joi.object({
     uid: joi.string(),
     email:joi.string(),
     notifications:joi.array(),
+    // reservations:joi.array(),
 })
 
 export default userValidation;

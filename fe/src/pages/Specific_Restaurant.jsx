@@ -23,45 +23,48 @@ const Specific_Restaurant = () => {
     const nav = useNavigate();
 
     const fetchReviews = async () => {
-        axios.get(`/restaurants/${id}/reviews`)
-            .then((res) => {
-                setReviewsData(res.data);
-                setNewReview(false);
-                setIsLoading(false);
-                isProcessing.current = false;
-                setEditReview(old => {
-                    const obj = { ...old }
-                    res.data.forEach((review) => { obj[review._id] = false })   //Reset the edit status for each everytime we fetch reviews
-                    return obj;
-                })
+        try{
+            const res = await axios.get(`/restaurants/${id}/reviews`);
+            setReviewsData(res.data);
+            setEditReview(old => {
+                const obj = { ...old }
+                res.data.forEach((review) => { obj[review._id] = false })   //Reset the edit status for each everytime we fetch reviews
+                return obj;
             })
-            .catch(err => {
-                console.log("Error fetching reviews", err)
-                if (err.status === 404) {
-                    nav("/error");
-                }
-            })
+        }catch(err){
+            console.log("Error fetching reviews", err)
+            if (err.status === 404) {
+                nav("/error");
+            }
+        }finally{
+            isProcessing.current = false;
+            setNewReview(false);
+            setIsLoading(false);
+        }
     }
+
     const fetchRestaurant = async () => {
-        axios.get(`/restaurants/${id}`)
-            .then((res) => {
-                setrestaurantData(res.data);
-            })
-            .catch(err => {
-                console.log("Error fetching restaurant", err)
-                if (err.status === 404) {
-                    nav("/error");
-                }
-            })
+        try{
+            const res = await axios.get(`/restaurants/${id}`)
+            setrestaurantData(res.data);
+        }catch(err){
+            console.log("Error fetching restaurant", err)
+            if (err.status === 404) {
+                nav("/error");
+            }
+        }finally{
+        }
     }
+
     useEffect(() => {
+        setIsLoading(true);
         fetchRestaurant();
         fetchReviews();
     }, [id])
 
-    useEffect(() => {
-        setIsLoading(false);
-    }, [editRestaurant])
+    // useEffect(() => {
+    //     setIsLoading(false);
+    // }, [editRestaurant])
 
     const UpdRestaurant = () => {
         setEditRestaurant(true);
@@ -98,23 +101,24 @@ const Specific_Restaurant = () => {
         setEditReview(old => { return { ...old, [review_id]: true } })
         fetchRestaurant();
     }
-    const DelReview = (review_id) => {
+    const DelReview = async (review_id) => {
 
         if (isProcessing.current) return;
         isProcessing.current = true;
 
-        axios.post(`/restaurants/${id}/reviews/${review_id}?_method=DELETE`)
-            .then(() => {
-                console.log("Review Deleted!")
-                fetchReviews();
-                fetchRestaurant();
-                isProcessing.current = false;
-                toast.success("Review has been deleted.")
-            })
-            .catch((err) => {
-                console.log(err);
-                nav("/error")
-            })
+        try {
+            await axios.post(`/restaurants/${id}/reviews/${review_id}?_method=DELETE`);
+            console.log("Review Deleted!");
+            await fetchReviews();
+            await fetchRestaurant();
+            toast.success("Review has been deleted.");
+        } catch (err) {
+            console.error(err);
+            nav("/error");
+        } finally{
+            isProcessing.current = false;
+        }
+
     }
 
     const reviewsStyle = "bg-zinc-800 p-5 rounded-lg border border-zinc-700 hover:border-yellow-300 transition-all"
@@ -128,7 +132,8 @@ const Specific_Restaurant = () => {
     if (restaurantData) return (
         <>
             <div className="max-w-[1280px] w-5/6 text-white px-6 py-10 space-y-4">
-
+            
+                {/* Restaurant Section */}
                 {
                     editRestaurant ?
                         <RestaurantUpdate restaurantData={restaurantData} setEditRestaurant={setEditRestaurant} id={id} fetchRestaurant={fetchRestaurant} />
@@ -145,7 +150,7 @@ const Specific_Restaurant = () => {
                         <button className="btn text-sky-300 hover:text-yellow-300 font-thin text-md" onClick={() => { setNewReview(old => !old) }}>{(newReview ? "X Cancel" : "+ Add Review")}</button>
                     </div>
 
-                    {newReview && <ReviewForm title="Add a review" rating="" message="" target={`/restaurants/${id}/reviews/`} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant} />}
+                    {newReview && <ReviewForm title="Add a review" rating="" message="" target={`/restaurants/${id}/reviews/`} ownerID={restaurantData.owner} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant} />}
 
                     {/* Review Card */}
 
@@ -153,9 +158,9 @@ const Specific_Restaurant = () => {
                         return (
                             <div key={review._id} className={reviewsStyle}>{
                                 !editReview[review._id] ? //currently not in EDIT state? then render the review else render the edit
-                                    <ReviewHero RestaurantOwner={restaurantData.owner} ReviewOwner={review.owner} UpdReview={UpdReview} DelReview={DelReview} rating={review.rating} message={review.message} id={review._id} />
+                                    <ReviewHero RestaurantOwner={restaurantData.owner} ReviewOwner={review.owner} UpdReview={UpdReview} DelReview={DelReview} rating={review.rating} message={review.message} id={review._id} isProcessing={isProcessing.current} />
                                     :
-                                    <ReviewForm rating={review.rating} message={review.message} target={`/restaurants/${id}/reviews/${review._id}/?_method=PATCH`} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant} />
+                                    <ReviewForm rating={review.rating} message={review.message} target={`/restaurants/${id}/reviews/${review._id}/?_method=PATCH`} updateReviews={fetchReviews} updateRestaurant={fetchRestaurant} isProcessing={isProcessing} ownerID={restaurantData.owner}/>
                             }</div>
                         )
                     })}

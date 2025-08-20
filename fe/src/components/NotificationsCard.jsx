@@ -7,20 +7,19 @@ import { Link } from "react-router";
 //instead of refetching data always, update the data present after sending axios request. update the readMore according to size
 
 //to batch fetch: https://chatgpt.com/s/t_6880e450510c8191bde6e2e8787a6731
-export default function NotificationsCard({setShowNotifications}) {
+export default function NotificationsCard({ setShowNotifications, bellRef }) {
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const isProcessing = useRef(false)
     const { uid } = useAuth();
     const [readMore, setReadMore] = useState([])
-    const [restaurantsMap, setRestaurantsMap] = useState({});
     const [usersMap, setUsersMap] = useState({});
     const wrapperRef = useRef(null);
 
     useEffect(() => {
         function handleClickOutside(event) {
-            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target) && bellRef.current && !bellRef.current.contains(event.target)) {
                 setShowNotifications(false);
             }
         }
@@ -36,11 +35,6 @@ export default function NotificationsCard({setShowNotifications}) {
             setReadMore(Array(res.data.length).fill(false));
 
             if (res.data.length === 0) return;
-
-            //Batch fetch the required details in a single request
-            const ids = [...new Set(res.data.map(n => n.restaurantID))];
-            const restaurantsMap = await axios.get(`/restaurants/batch/${ids.join(",")}`);
-            setRestaurantsMap(restaurantsMap.data);
 
             const uids = [...new Set(res.data.map(n => n.from))];
             const usersMap = await axios.get(`/users/batch/${uids.join(",")}`);
@@ -109,8 +103,9 @@ export default function NotificationsCard({setShowNotifications}) {
 
             toast.success("Notification removed!")
         } catch (err) {
+            const msg = err.response?.data?.message || "Something went wrong";
             console.log(err);
-            toast.error(err)
+            toast.error(msg);
         } finally {
             isProcessing.current = false;
         }
@@ -122,7 +117,7 @@ export default function NotificationsCard({setShowNotifications}) {
     // console.log(usersMap);
 
     return (
-        <div ref={wrapperRef} className="absolute top-12 right-12 md:right-15 min-w-80 bg-zinc-750 rounded-lg px-1 ">
+        <div ref={wrapperRef} className="border-1 border-zinc-200/20 absolute top-12 right-12 md:right-15 min-w-80 bg-zinc-750 rounded-lg px-1 ">
 
             {isLoading ?
                 <div className="flex flex-col items-center justify-center px-3 py-3 gap-2">
@@ -151,10 +146,8 @@ export default function NotificationsCard({setShowNotifications}) {
                                 {
                                     readMore[ind] &&
                                     <>
-
-                                        <h1>{notif.message} on {new Date(notif.reservationDate).toLocaleDateString("en-GB")}</h1>
-                                        <span>at <Link to={`restaurants/${notif.restaurantID}`} className="hover:underline">
-                                            {restaurantsMap[notif.restaurantID].title}</Link> </span>
+                                        <h1>{notif.message} </h1>
+                                        <p> on {new Date(notif.notificationDate).toLocaleDateString("en-GB")}</p>
                                     </>
                                 }
                                 <div className="flex w-full items-center justify-between">

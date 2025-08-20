@@ -12,6 +12,7 @@ export default function Menu({ owner, id }) {
     const [menuExpand, setMenuExpand] = useState(false);
     const [canAddNew, setCanAddNew] = useState(false);
     const [showEdit, setShowEdit] = useState([]);
+    const [isDeleting,setIsDeleting] = useState(false);
     const isProcessing = useRef(false)
 
     const FetchMenu = async () => {
@@ -21,6 +22,7 @@ export default function Menu({ owner, id }) {
                 setData(d.data);
                 setShowEdit(Array(d.data.length).fill(false));
                 setCanAddNew(false);
+                setIsDeleting(false);
             })
             .catch((err) => {
                 console.log(err);
@@ -83,8 +85,8 @@ export default function Menu({ owner, id }) {
                                                 (isAdmin || owner === uid)
                                                 &&
                                                 <>
-                                                    <button className="px-1 text-red-400 hover:text-red-600 transition-colors" onClick={() => handleDelete(ItemID)}><MdDelete /></button>
-                                                    <button className="px-1 text-sky-400 hover:text-sky-600 transition-colors" onClick={() => handleEdit(ItemID)}><TbEdit /></button>
+                                                    <button className="px-1 text-red-400 hover:text-red-600 transition-colors" onClick={() => {setIsDeleting(true); handleDelete(ItemID)}} disabled={isDeleting}><MdDelete /></button>
+                                                    <button className="px-1 text-sky-400 hover:text-sky-600 transition-colors" onClick={() => handleEdit(ItemID)} disabled={isDeleting}><TbEdit /></button>
                                                 </>
                                             }
 

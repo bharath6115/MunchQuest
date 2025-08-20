@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import User from "../models/Users.js";
 import validateUser from "../models/UserValidation.js"
 import validateNotification from "../models/NotificationValidation.js"
+import Reservation from "../models/Reservation.js";
 
 const router = express.Router();
 
@@ -44,8 +45,10 @@ router.post("/", async (req, res) => {
 router.delete("/:uid", async (req, res) => {
 
     const data = await User.findOneAndDelete({ uid: req.params.uid });
+    const reservationData = await Reservation.find({userID: req.params.uid});
     if (!data) return res.status(404).send("Invalid user ID");
-
+    
+    await Promise.all(reservationData.map(obj => Reservation.findByIdAndDelete(obj._id)));
     res.send("deleted");
 })
 

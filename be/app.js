@@ -7,6 +7,7 @@ import reviewsRouter from "./routes/reviews.js"
 import menuRouter from "./routes/menu.js"
 import userRouter from "./routes/user.js"
 import notificationRouter from "./routes/notification.js"
+import reservationRouter from "./routes/reservations.js"
 import dotenv from "dotenv"
 dotenv.config();
 let URL = "mongodb://localhost:27017/MunchQuest"
@@ -39,3 +40,4 @@ app.use("/restaurants/:Rid/reviews",reviewsRouter)
 app.use("/restaurants/:Rid/menu",menuRouter)
 app.use("/users",userRouter)
 app.use("/users/:uid/notifications",notificationRouter)
+app.use("/reservations",reservationRouter)

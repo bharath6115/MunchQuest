@@ -40,7 +40,7 @@ export default function Profile() {
     }
 
     return (
-        <div className="max-w-lg min-w-md mx-auto my-auto p-6 bg-zinc-800 rounded-2xl shadow-xl border border-zinc-700 text-zinc-100">
+        <div className="max-w-lg min-w-sm md:min-w-md mx-auto my-auto p-6 bg-zinc-800 rounded-2xl shadow-xl border border-zinc-700 text-zinc-100">
             <div className="flex flex-col items-center gap-4">
                 {/* Profile Image */}
                 <div className="w-24 h-24 rounded-full bg-zinc-700 flex items-center justify-center text-3xl font-bold text-zinc-400">

@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "../services/firebaseMethods"
 import toast from "react-hot-toast"
 
-export default function CreateReview({ rating, message, target, updateRestaurant, updateReviews, title = "" }) {
+export default function CreateReview({ rating, message, target, updateRestaurant, updateReviews, ownerID, title = "" }) {
     const nav = useNavigate();
     const { uid, isLoggedIn } = useAuth();
     const [data, setData] = useState({
@@ -69,12 +69,17 @@ export default function CreateReview({ rating, message, target, updateRestaurant
     }
 
     const HandleSubmit = async () => {
+        const notifPayload = {
+            from: uid,
+            message: `New Review`,
+            isRead: false,
+        };
         const payload = { ...data };
         payload.rating = parseInt(payload.rating);
         payload["owner"] = uid;
         try {
+            if(title) await axios.post(`/users/${ownerID}/notifications`, notifPayload);
             const res = await axios.post(target, payload);
-            setData({ rating: "", message: "", });
             updateReviews();    //refetch the reviews
             updateRestaurant();
             toast.success(`Review ${title === "" ? "updated" : "posted"} sucessfully!`)
@@ -85,6 +90,7 @@ export default function CreateReview({ rating, message, target, updateRestaurant
             console.error("Submit error:", err);
             nav("/error");
         } finally {
+            setData({ rating: "", message: "", });
             isProcessing.current = false;
             setIsSubmitting(false);
         }

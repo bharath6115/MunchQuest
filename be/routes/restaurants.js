@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Restaurant from "../models/Restaurant.js";
 import Review from "../models/Review.js";
 import RestaurantValidation from "../models/RestaurantValidation.js";
+import Reservation from "../models/Reservation.js";
 
 const router = express.Router({ mergeParams: true });
 
@@ -76,11 +77,13 @@ router.delete("/:id", async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).send("Invalid ID, cant Delete.");
 
     const data = await Restaurant.findById(req.params.id)
+    const reservationData = await Reservation.find({restaurantID: req.params.id});
     if (!data) return res.status(404).send("Cant Delete.")
 
 
     //delete all reviews associated with the restaurant.
     await Promise.all(data.reviews.map(reviewId => Review.findByIdAndDelete(reviewId)));
+    await Promise.all(reservationData.map(obj => Reservation.findByIdAndDelete(obj._id)));
 
     await Restaurant.findByIdAndDelete(req.params.id);
 
