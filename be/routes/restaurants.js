@@ -4,6 +4,7 @@ import Restaurant from "../models/Restaurant.js";
 import Review from "../models/Review.js";
 import RestaurantValidation from "../models/RestaurantValidation.js";
 import Reservation from "../models/Reservation.js";
+import cloudinary from "../app.js";
 
 const router = express.Router({ mergeParams: true });
 
@@ -84,6 +85,18 @@ router.delete("/:id", async (req, res) => {
     //delete all reviews associated with the restaurant.
     await Promise.all(data.reviews.map(reviewId => Review.findByIdAndDelete(reviewId)));
     await Promise.all(reservationData.map(obj => Reservation.findByIdAndDelete(obj._id)));
+
+    //delete all images in cloudinary database:
+    try {
+        const results = await Promise.all(
+            data.images.map(async (ele) => {
+                if (ele.id === "null") return null;
+                return await cloudinary.uploader.destroy(ele.id);
+            })
+        );
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 
     await Restaurant.findByIdAndDelete(req.params.id);
 

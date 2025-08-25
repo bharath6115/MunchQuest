@@ -78,3 +78,5 @@ app.use("/restaurants/:Rid/menu", menuRouter)
 app.use("/users", userRouter)
 app.use("/users/:uid/notifications", notificationRouter)
 app.use("/reservations", reservationRouter)
+
+export default cloudinary;
