@@ -10,7 +10,7 @@ export default function Card({ img, id, title, location, description }) {
     <div className={cardStyles}>
       <div className="flex flex-col lg:flex-row text-left gap-5 items-center justify-between w-full">
 
-        <img className="object-cover w-[300px] rounded-lg" src={img} alt="restaurant" />
+        <img className="object-cover w-[300px] rounded-lg" src={img.url} alt="restaurant" />
 
         <div className="flex flex-col flex-grow text-left items-start gap-2 w-full ">
           <h2 className="text-2xl font-medium">{title}</h2>

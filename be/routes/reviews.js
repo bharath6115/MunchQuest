@@ -88,7 +88,7 @@ router.patch("/:id", async (req, res) => {
 
     let x = Rev.rating;
 
-    console.log(x);
+    // console.log(x);
 
     const { error, value } = ReviewValidation.validate(req.body);
     if (error) return res.status(404).send(error.details);

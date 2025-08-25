@@ -41,18 +41,13 @@ const Restaurants = () => {
     if (isLoading) return <Loading />;
     return (
         <>
-            <div className="w-5/6 flex justify-between items-center">
-                <div className="flex text-md sm:text-2xl mt-3">
-                    <button
-                        className={`${SliderStyle} rounded-l-lg ${showAll ? "" : "bg-zinc-700"}`}
-                        onClick={() => { fetchData("/restaurants/verified"); setShowAll(false); }}
-                    >Verified Restaurants</button>
-                    <button
-                        className={`${SliderStyle} rounded-r-lg ${showAll ? "bg-zinc-700" : ""}`}
-                        onClick={() => { fetchData("/restaurants"); setShowAll(true); }}
-                    >All Restaurants</button>
+            <div className="w-5/6 max-w-[1280px] flex justify-between items-center mt-2">
+                <div className="flex items-center justify-center text-sm sm:text-xl">
+                    <button className={`${SliderStyle} rounded-l-lg ${showAll ? "" : "bg-zinc-700"}`} onClick={() => { fetchData("/restaurants/verified"); setShowAll(false); }} >Verified </button>
+                    <button className={`${SliderStyle} rounded-r-lg ${showAll ? "bg-zinc-700" : ""}`} onClick={() => { fetchData("/restaurants"); setShowAll(true); }} >All </button>
+                    <span className="ml-1 text-xl sm:text-2xl">Restaurants</span>
                 </div>
-                <Link to="/restaurants/new" className="mt-1 text-lg text-sky-300 font-thin hover:text-yellow-400">+ Add New</Link>
+                <Link to="/restaurants/new" className="text-lg text-sky-300 font-thin hover:text-yellow-400">+ Add New</Link>
             </div>
             {data.map((val) => {
                 return <Card img={val.images[0]} key={val["_id"]} id={val._id} title={val.title} description={val.description} location={val.location} />

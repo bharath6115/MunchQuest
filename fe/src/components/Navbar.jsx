@@ -116,7 +116,7 @@ export default function Navbar() {
                         <div className="gap-4 flex items-center justify-center">
 
                             <button ref={bellRef} aria-label="Notifications" className={`text-2xl ${showNotifications && "text-yellow-300"}`} onClick={() => { setShowNotifications(old => !old) }}> <FaRegBell /> </button>
-                            {unreadNotif && <div className="absolute top-4 right-17 w-[9px] h-[9px] bg-yellow-400 rounded-full"></div>}
+                            {unreadNotif && <div className="absolute top-4 right-12 md:right-17 w-[9px] h-[9px] bg-yellow-400 rounded-full"></div>}
                             {showNotifications && <NotificationsCard bellRef={bellRef} setShowNotifications={setShowNotifications} />}
 
                             <button ref={profileRef} aria-label="User Details" className={`text-2xl ${showProfile && "text-yellow-300"}`} onClick={() => { setShowProfile(old => !old) }}> <CgProfile /> </button>

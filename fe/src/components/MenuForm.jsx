@@ -31,7 +31,7 @@ export const MenuForm = ({ val, target, refresh }) => {
 
         axios.post(target, { item: Name })
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 setName("");
                 isProcessing.current = false;
                 refresh();

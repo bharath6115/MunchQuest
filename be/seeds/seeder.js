@@ -1,4 +1,4 @@
-import {fName,sName,location,images} from "./helper.js"
+import {fName,sName,location,images, descriptions} from "./helper.js"
 import { reviewsWithRating } from "./helper.js";
 import { menuItems } from "./helper.js";
 import Restaurant from "../models/Restaurant.js"
@@ -44,13 +44,13 @@ const seedDB = async()=>{
         const data = new Restaurant({
             title : `${rand(fName)} ${rand(sName)}`,
             location : rand(location),
-            description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit nemo praesentium nobis, quam impedit, quidem exLorem ipsum dolor sit amet consectetur adipisicing elit. Velit nemo praesentium nobis, quam impedit, quidem explicabo nostrum, adipisci laboriosam sed qui consequuntur debitis voluptate rerum natus assumenda deleniti deserunt magniplicabo nostrum, adipisci laboriosam sed qui consequuntur debitis voluptate rerum natus assumenda deleniti deserunt magni?",
+            description: rand(descriptions),
             reviews: reviews,
             rating: (rating/reviews.length),
             reserveSeat:"Reserve a seat",
             owner:process.env.ADMIN_UID,
             isVerified: true,
-            images: [images[i%(images.length)]],
+            images: [{url:images[i%(images.length)], id:"null"}],
             menu: menu,
         })
         await data.save();

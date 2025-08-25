@@ -6,6 +6,7 @@ import { useState, useRef } from "react";
 import Reservations from "./Reservations"
 import { useEffect } from "react";
 import { IoMdMore } from "react-icons/io";
+import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
 export default function RestaurantHero({ id, restaurantData, UpdRestaurant, DelRestaurant, VerifyRestaurant }) {
     const { isAdmin, uid, isLoggedIn } = useAuth();
@@ -15,18 +16,19 @@ export default function RestaurantHero({ id, restaurantData, UpdRestaurant, DelR
     const [isDeleting, setIsDeleting] = useState(false);
     const [showReservations, setShowReservations] = useState(false);
     const [showAdminActions, setShowAdminActions] = useState(false);
+    const [current, setCurrent] = useState(0);
     const adminActionsRef = useRef(null);
     const adminActionsDivRef = useRef(null);
     const isReserving = useRef(false);
 
-    useEffect(()=>{
-        const func = (event)=>{
-            if(adminActionsRef.current && !adminActionsRef.current.contains(event.target) && 
-               adminActionsDivRef.current && !adminActionsDivRef.current.contains(event.target)) setShowAdminActions(false);
+    useEffect(() => {
+        const func = (event) => {
+            if (adminActionsRef.current && !adminActionsRef.current.contains(event.target) &&
+                adminActionsDivRef.current && !adminActionsDivRef.current.contains(event.target)) setShowAdminActions(false);
         }
         document.addEventListener("mousedown", func);
-        return ()=>document.removeEventListener("mousedown", func);
-    },[])
+        return () => document.removeEventListener("mousedown", func);
+    }, [])
 
     const HandleReserve = async (e) => {
         e.preventDefault();
@@ -69,26 +71,51 @@ export default function RestaurantHero({ id, restaurantData, UpdRestaurant, DelR
 
     return (
         <div className="flex flex-col items-center lg:flex-row bg-zinc-800 p-6 rounded-xl border border-zinc-700 shadow-xl gap-6">
+
             {/* image */}
-            <div className="lg:min-w-[400px]">
-                <img className="rounded-lg object-cover" src={restaurantData.images[0]} alt="restaurant" />
+            <div className="relative w-full max-w-[450px] lg:min-w-[400px] overflow-hidden rounded-lg max-h-[400px]">
+                {/* Track with all images */}
+                <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${current * 100}%)` }} >
+                    {restaurantData.images.map((src, ind) => (
+                        <img key={ind} src={src.url} alt={`restaurant_image_${ind}`} className="w-full flex-shrink-0 object-cover rounded-lg" />
+                    ))}
+                </div>
+                {
+                    restaurantData.images.length > 1 &&
+                    <>
+                        {/* Prev button */}
+                        <button onClick={() => setCurrent(old => (old === 0 ? restaurantData.images.length - 1 : old - 1))} className="absolute top-1/2 left-2 -translate-y-1/2 bg-black/40 p-1 rounded-full text-white hover:bg-black/60" > <MdNavigateBefore size={28} /> </button>
+
+                        {/* Next button */}
+                        <button onClick={() => setCurrent(old => (old === restaurantData.images.length - 1 ? 0 : old + 1))} className="absolute top-1/2 right-2 -translate-y-1/2 bg-black/40 p-1 rounded-full text-white hover:bg-black/60" > <MdNavigateNext size={28} /> </button>
+
+                        {/* dots */}
+                        <div className="absolute bottom-2 justify-self-center flex gap-1" >
+                            {restaurantData.images.map((_, ind) => (
+                                <div key={ind} className={`cursor-pointer w-[8px] h-[8px] rounded-full ${current == ind ? "bg-zinc-100" : "bg-zinc-500"}`} onClick={() => setCurrent(ind)} />
+                            ))}
+                        </div>
+                    </>
+                }
+
             </div>
+
             {/* restaurant details */}
             <div className="flex flex-col space-y-2 text-zinc-300 text-left flex-grow w-full">
 
                 <h1 className="self-end text-yellow-300">⭐{restaurantData.rating.toFixed(1)}/5 <span className="text-zinc-300">({restaurantData.reviews.length})</span></h1>
 
-                <h1 className="text-4xl flex flex-row gap-1">
+                <h1 className="text-4xl flex flex-row gap-1 overflow-hidden">
                     {restaurantData.title}
                     {restaurantData.isVerified && <MdOutlineVerified className="text-yellow-300 text-[26px]" />}
                 </h1>
                 <h2 className="text-md mb-6">{restaurantData.location}</h2>
 
-                <h3 className="my-4">{restaurantData.description}</h3>
+                <h3 className="my-4 overflow-hidden">{restaurantData.description}</h3>
 
                 {/* reserve seat logic */}
                 {!showReservationForm ? (
-                    <button type="button" className="self-start inline-block border-2 text-black rounded-lg bg-sky-400 hover:bg-yellow-300 px-3 py-1 transition-colors duration-150" onClick={() => setShowReservationForm(true)}>
+                    <button type="button" title={restaurantData.isVerified ? "Click to reserve a seat" : "This restaurant isn't verified yet"} className="self-start inline-block border-2 text-black rounded-lg bg-sky-400 hover:bg-yellow-300 px-3 py-1 transition-colors duration-150 disabled:bg-gray-500 disabled:cursor-not-allowed" onClick={() => setShowReservationForm(true)} disabled={!restaurantData.isVerified}>
                         {restaurantData.reserveSeat}
                     </button>
                 ) : (
@@ -116,24 +143,24 @@ export default function RestaurantHero({ id, restaurantData, UpdRestaurant, DelR
                 <div className="flex flex-row items-center justify-end">
                     {(isAdmin || uid === restaurantData.owner) && (
                         <div className="relative">
-                            <button ref={adminActionsRef} className="border-1 border-zinc-200/15 flex items-center px-2 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-white" onClick={() => { setShowAdminActions(old => !old) }}> Admin Actions <IoMdMore className="text-2xl"/> </button>
+                            <button ref={adminActionsRef} className="border-1 border-zinc-200/15 flex items-center px-2 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-white" onClick={() => { setShowAdminActions(old => !old) }}> Admin Actions <IoMdMore className="text-2xl" /> </button>
                             {
                                 showAdminActions &&
-                                <div ref={adminActionsDivRef} className="absolute left-0 mt-2 max-w-37 bg-zinc-750 rounded-lg shadow-lg overflow-hidden z-10">
+                                <div ref={adminActionsDivRef} className="absolute left-0 mt-2 bg-zinc-750 rounded-lg shadow-lg overflow-hidden z-10 transition">
                                     <ul className="flex flex-col text-sm">
 
                                         {/* Update */}
-                                        <li className="px-4 py-2 text-blue-300 hover:text-blue-600 hover:bg-blue-300 cursor-pointer" onClick={UpdRestaurant}> Update </li>
+                                        <li className="px-4 py-2 text-blue-300 hover:text-blue-600 hover:bg-blue-300 cursor-pointer transition" onClick={UpdRestaurant}> Update </li>
 
                                         {/* Delete */}
-                                        <li className="px-4 py-2 text-red-600 hover:bg-red-300 cursor-pointer" onClick={() => { setIsDeleting(true); DelRestaurant(); }} > {isDeleting ? "Deleting.." : "Delete"} </li>
+                                        <li className="px-4 py-2 text-red-500 hover:bg-red-300 cursor-pointer transition" onClick={() => { setIsDeleting(true); DelRestaurant(); }} > {isDeleting ? "Deleting.." : "Delete"} </li>
 
                                         {/* Reservations */}
-                                        <li className="px-4 py-2 text-purple-600 hover:bg-purple-300 cursor-pointer" onClick={() => setShowReservations(true)} > View Reservations </li>
+                                        <li className="px-4 py-2 text-purple-300 hover:text-purple-600 hover:bg-purple-300 cursor-pointer transition" onClick={() => setShowReservations(true)} > View Reservations </li>
 
                                         {/* Verify (optional) */}
-                                        {isAdmin && !restaurantData.isVerified && 
-                                            <li className="px-4 py-2 text-green-600 hover:bg-green-300 cursor-pointer" onClick={VerifyRestaurant}> Verify </li>
+                                        {isAdmin && !restaurantData.isVerified &&
+                                            <li className="px-4 py-2 text-green-600 hover:bg-green-300 cursor-pointer transition" onClick={VerifyRestaurant}> Verify </li>
                                         }
                                     </ul>
                                 </div>
@@ -142,7 +169,7 @@ export default function RestaurantHero({ id, restaurantData, UpdRestaurant, DelR
                     )}
 
                     {showReservations && (
-                        <Reservations toggle={setShowReservations} id={id} searchIn="restaurant"/>
+                        <Reservations toggle={setShowReservations} id={id} searchIn="restaurant" />
                     )}
                 </div>
 

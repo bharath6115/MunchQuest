@@ -78,7 +78,7 @@ const Specific_Restaurant = () => {
             .then((res) => {
                 isProcessing.current = false;
                 fetchRestaurant();
-                console.log(res);
+                // console.log(res);
             })
             .catch(err => console.log(err));
     }

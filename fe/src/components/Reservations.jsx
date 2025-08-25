@@ -80,8 +80,8 @@ export default function Reservation({ toggle, searchIn, id }) {
             isProcessing.current = false;
         }
     }
-    console.log(id);
-    console.log(restaurantsMap);
+    // console.log(id);
+    // console.log(restaurantsMap);
     return (
         <div
             className="fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-blur z-100 backdrop-blur-xs"
